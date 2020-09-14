@@ -1,0 +1,94 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[StLinkDriver]
+CStepIntDis=_ 0
+LeaveTargetRunning=_ 0
+stlinkserialNo=434B4E00
+stlinkfoundProbes=
+stlinkResetStyle=0
+stlinkResetStrategy=1
+[DebugChecksum]
+Checksum=-134646225
+[Exceptions]
+StopOnUncaught=_ 0
+StopOnThrow=_ 0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[CodeCoverage]
+Enabled=_ 0
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
+[SfrWindow]
+Show=1 1
+Sort=4 0
+[InterruptLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
+[Interrupts]
+Enabled=1
+[MemConfig]
+Base=1
+Manual=0
+Ddf=1
+TypeViol=0
+Stop=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[Simulator]
+Freq=10000000
+MultiCoreRunAll=1
+[struct_types]
+Fmt0=ADC_HandleTypeDef-State	4	0
+Fmt1=ADC_TypeDef-IER	4	0
+[array_types]
+Fmt0=std::uint8_t[4]	4	0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c}.1737.3" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\stm32f0xx_it.c}.207.3" 0 0 1 "" 0 "" 0
+Count=2
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Aliases]
+A0=_ "C:\Users\romanenko\Dropbox\naduvalka\airpacker_030\EWARM\startup_stm32f030x8.s" ""
+A1=_ "C:\Users\romanenko\Dropbox\naduvalka\airpacker_030\Middlewares\Third_Party\FreeRTOS\Source\list.c" ""
+A2=_ "C:\Users\romanenko\Dropbox\naduvalka\airpacker_030\Middlewares\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM0\port.c" ""
+A3=_ "C:\Users\romanenko\Dropbox\naduvalka\airpacker_030\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_5.c" ""
+A4=_ "C:\Users\romanenko\Dropbox\naduvalka\airpacker_030\Middlewares\Third_Party\FreeRTOS\Source\tasks.c" ""
+Count=5
+SuppressDialog=0
+[CallStackLog]
+Enabled=0
+[CallStackStripe]
+ShowTiming=1

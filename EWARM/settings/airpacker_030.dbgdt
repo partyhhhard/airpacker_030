@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Project>
+  <Desktop>
+    <Static>
+      <Debug-Log>
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1861</ColumnWidth1></Debug-Log>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>399</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Disassembly>
+        <col-names>
+          
+          
+        <item>Disassembly</item><item>_I0</item></col-names>
+        <col-widths>
+          
+          
+        <item>500</item><item>20</item></col-widths>
+        <DisasmHistory/>
+        
+        
+      <ShowCodeCoverage>1</ShowCodeCoverage><ShowInstrProfiling>1</ShowInstrProfiling></Disassembly>
+      <CallStack>
+        <col-names>
+          
+          
+        <item>Frame</item><item>_I0</item></col-names>
+        <col-widths>
+          
+          
+        <item>3500</item><item>20</item></col-widths>
+      </CallStack>
+      <StaticWatch>
+        <expressions>
+          
+          
+        <item>uwTick</item><item>SystemCoreClock</item><item>CurTemp</item><item>huart1</item><item>temperatureControl</item><item>temperatureControlTaskHandle</item><item>motorControlTaskHandle</item><item>xMinimumEverFreeBytesRemaining</item><item>xFreeBytesRemaining</item><item>indicatorTaskHandle</item><item>enableHeater</item><item>irqState</item><item>irqDisableTime</item><item>deviceCurrentState</item><item>deviceMenuState</item><item>buttonRight</item><item>buttonLeft</item><item>hadc</item><item/></expressions>
+        <col-names>
+          
+          
+          
+          
+        <item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names>
+        <col-widths>
+          
+          
+          
+          
+        <item>227</item><item>150</item><item>100</item><item>174</item></col-widths>
+      </StaticWatch>
+      <Breakpoints>
+        <col-names>
+          
+          
+        <item>Breakpoint</item><item>_I0</item></col-names>
+        <col-widths>
+          
+          
+        <item>500</item><item>35</item></col-widths>
+      </Breakpoints>
+      <Find-All-References>
+        
+        
+        
+      <ColumnWidth0>664</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>1138</ColumnWidth2></Find-All-References>
+    <Find-in-Files><ColumnWidth0>569</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>854</ColumnWidth2><ColumnWidth3>379</ColumnWidth3></Find-in-Files><Select-Ambiguous-Definitions><ColumnWidth0>664</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>1138</ColumnWidth2></Select-Ambiguous-Definitions><Register><RegFindHistory/></Register><Locals><col-names><item>Location</item><item>Type</item><item>Value</item><item>Variable</item></col-names><col-widths><item>150</item><item>100</item><item>100</item><item>100</item></col-widths></Locals></Static>
+    <Windows>
+      
+      
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-27158-2660</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-26635-2670</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-9112-4636</Identity>
+            <TabName>References</TabName>
+            <Factory>Find-All-References</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-13211-7425</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-25133-23576</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab>
+            <Identity>TabID-10095-4208</Identity>
+            <TabName>Breakpoints</TabName>
+            <Factory>Breakpoints</Factory>
+          </Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-15887-2667</Identity>
+            <TabName>Disassembly</TabName>
+            <Factory>Disassembly</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-9676-3193</Identity>
+            <TabName>Call Stack</TabName>
+            <Factory>CallStack</Factory>
+          </Tab>
+          <Tab>
+            <Identity>TabID-32574-3787</Identity>
+            <TabName>Live Watch</TabName>
+            <Factory>StaticWatch</Factory>
+          </Tab>
+        <Tab><Identity>TabID-23850-10783</Identity><TabName>Register</TabName><Factory>Register</Factory><Session><REG1>0</REG1><REG2>0</REG2><Group>24</Group><States>18</States><State0>DBGMCU_APBHFZ</State0><State1>DBGMCU_APBLFZ</State1><State2>DBGMCU_CR</State2><State3>TIM1_ARR</State3><State4>TIM1_BDTR</State4><State5>TIM1_CCMR1_Input</State5><State6>TIM1_CCR1</State6><State7>TIM1_CCR2</State7><State8>TIM1_CNT</State8><State9>TIM1_CR1</State9><State10>TIM1_CR2</State10><State11>TIM1_DIER</State11><State12>TIM1_SR</State12><State13>TIM3_ARR</State13><State14>TIM3_CR1</State14><State15>TIM3_CR2</State15><State16>TIM3_DIER</State16><State17>TIM3_SR</State17></Session></Tab><Tab><Identity>TabID-11845-4789</Identity><TabName>Locals</TabName><Factory>Locals</Factory></Tab><Tab>
+            <Identity>TabID-5139-2664</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>airpacker_030</ExpandedNode><ExpandedNode>airpacker_030/Application</ExpandedNode><ExpandedNode>airpacker_030/Application/EWARM</ExpandedNode><ExpandedNode>airpacker_030/Application/User</ExpandedNode><ExpandedNode>airpacker_030/Application/User/Core</ExpandedNode><ExpandedNode>airpacker_030/Application/User/indicator</ExpandedNode><ExpandedNode>airpacker_030/Application/User/motor</ExpandedNode><ExpandedNode>airpacker_030/Drivers</ExpandedNode><ExpandedNode>airpacker_030/Drivers/CMSIS</ExpandedNode><ExpandedNode>airpacker_030/Drivers/STM32F0xx_HAL_Driver</ExpandedNode></NodeDict></Session>
+          </Tab><Tab><Identity>TabID-21148-20827</Identity><TabName>Register</TabName><Factory>Register</Factory><Session><State2>TIM1_PSC</State2><State3>TIM1_SR</State3><REG1>0</REG1><REG2>0</REG2><Group>24</Group><States>2</States><State0>TIM1_PSC</State0><State1>TIM1_SR</State1></Session></Tab></Tabs>
+        
+      <SelectedTab>2</SelectedTab></Wnd2></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_flash.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>176</YPos2><SelStart2>6056</SelStart2><SelEnd2>6056</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1285</YPos2><SelStart2>48295</SelStart2><SelEnd2>48295</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>92</YPos2><SelStart2>4047</SelStart2><SelEnd2>4059</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>4291</YPos2><SelStart2>152766</SelStart2><SelEnd2>152766</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\pcconn\pcconn.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>103</SelStart2><SelEnd2>103</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>220</YPos2><SelStart2>12381</SelStart2><SelEnd2>12381</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\task.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>79</YPos2><SelStart2>3826</SelStart2><SelEnd2>3826</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>251</YPos2><SelStart2>8652</SelStart2><SelEnd2>8652</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>196</YPos2><SelStart2>7733</SelStart2><SelEnd2>7733</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1437</YPos2><SelStart2>51625</SelStart2><SelEnd2>51625</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\stack_macros.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>92</YPos2><SelStart2>4592</SelStart2><SelEnd2>4592</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM0\portmacro.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>37</YPos2><SelStart2>1945</SelStart2><SelEnd2>1945</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_5.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>198</YPos2><SelStart2>6526</SelStart2><SelEnd2>6526</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM0\portasm.s</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>36</YPos2><SelStart2>1616</SelStart2><SelEnd2>1616</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1355</YPos2><SelStart2>45327</SelStart2><SelEnd2>45346</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Inc\main.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>35</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1172</YPos2><SelStart2>69828</SelStart2><SelEnd2>69828</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_gpio_ex.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>95</YPos2><SelStart2>6570</SelStart2><SelEnd2>6570</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\CMSIS\Include\core_cm0.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>559</YPos2><SelStart2>27935</SelStart2><SelEnd2>27935</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Inc\FreeRTOSConfig.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>75</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\queue.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>22</YPos2><SelStart2>1714</SelStart2><SelEnd2>1722</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\include\croutine.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>222</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>291</YPos2><SelStart2>22957</SelStart2><SelEnd2>22957</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\pcconn\pcconn.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1</YPos2><SelStart2>289</SelStart2><SelEnd2>289</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Inc\stm32f0xx_hal_conf.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>33</YPos2><SelStart2>2354</SelStart2><SelEnd2>2354</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>426</YPos2><SelStart2>24447</SelStart2><SelEnd2>24447</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\startup_stm32f030x8.s</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>159</YPos2><SelStart2>6921</SelStart2><SelEnd2>6921</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\freertos.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>68</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\stm32f030x8_flash.icf</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>644</SelStart2><SelEnd2>644</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\temp_sensor.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>318</SelStart2><SelEnd2>318</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\CMSIS\Device\ST\STM32F0xx\Include\stm32f030x8.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>368</YPos2><SelStart2>22302</SelStart2><SelEnd2>22302</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>276</YPos2><SelStart2>10736</SelStart2><SelEnd2>10736</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_cortex.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>53</YPos2><SelStart2>2284</SelStart2><SelEnd2>2284</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_i2c.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>194</YPos2><SelStart2>9596</SelStart2><SelEnd2>9596</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_uart.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>53</YPos2><SelStart2>3301</SelStart2><SelEnd2>3301</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_spi.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>30</YPos2><SelStart2>1182</SelStart2><SelEnd2>1182</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\tm_stm32_button.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>84</YPos2><SelStart2>3354</SelStart2><SelEnd2>3354</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\tm_stm32_button.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>168</YPos2><SelStart2>2890</SelStart2><SelEnd2>2890</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>386</YPos2><SelStart2>12115</SelStart2><SelEnd2>12115</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_exti.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>956</SelStart2><SelEnd2>956</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>134</YPos2><SelStart2>6619</SelStart2><SelEnd2>6619</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_gpio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>488</YPos2><SelStart2>19031</SelStart2><SelEnd2>19031</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_adc_ex.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>45</YPos2><SelStart2>2263</SelStart2><SelEnd2>2263</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\stm32f0xx_hal_msp.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>90</YPos2><SelStart2>3240</SelStart2><SelEnd2>3240</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>806</YPos2><SelStart2>38831</SelStart2><SelEnd2>38831</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_gpio.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>122</YPos2><SelStart2>5125</SelStart2><SelEnd2>5125</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\tasks.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>3240</YPos2><SelStart2>109892</SelStart2><SelEnd2>109892</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\stm32f0xx_it.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>222</YPos2><SelStart2>6941</SelStart2><SelEnd2>6941</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\list.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>76</YPos2><SelStart2>4175</SelStart2><SelEnd2>4175</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\indicator\indicator.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>276</YPos2><SelStart2>8882</SelStart2><SelEnd2>8882</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1286</YPos2><SelStart2>43420</SelStart2><SelEnd2>43420</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\temp_sensor.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>321</YPos2><SelStart2>10008</SelStart2><SelEnd2>10008</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\main.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>95</YPos2><SelStart2>3271</SelStart2><SelEnd2>3271</SelEnd2></Tab><ActiveTab>52</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\motor\motor.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>46</YPos2><SelStart2>2481</SelStart2><SelEnd2>2481</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\motor\motor.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>34</SelStart2><SelEnd2>34</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Src\indicator\indicator.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>93</YPos2><SelStart2>3239</SelStart2><SelEnd2>3247</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_adc.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>460</YPos2><SelStart2>29709</SelStart2><SelEnd2>29730</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1261</YPos2><SelStart2>52475</SelStart2><SelEnd2>52475</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-06AAC430><key>iaridepm.enu1</key></Toolbar-06AAC430><Toolbar-25385FA0><key>debuggergui.enu1</key></Toolbar-25385FA0></Sizes></Row0></Top><Left><Row0><Sizes/></Row0></Left><Right><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>610</Bottom><Right>490</Right><x>-2</x><y>-2</y><xscreen>167</xscreen><yscreen>164</yscreen><sizeHorzCX>104375</sizeHorzCX><sizeHorzCY>200734</sizeHorzCY><sizeVertCX>307500</sizeVertCX><sizeVertCY>749082</sizeVertCY></Rect></Wnd2></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>162</Bottom><Right>1602</Right><x>-2</x><y>-2</y><xscreen>1604</xscreen><yscreen>164</yscreen><sizeHorzCX>1002500</sizeHorzCX><sizeHorzCY>200734</sizeHorzCY><sizeVertCX>104375</sizeVertCX><sizeVertCY>200734</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Project>
+
+
