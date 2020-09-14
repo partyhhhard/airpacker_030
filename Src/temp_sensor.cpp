@@ -393,6 +393,8 @@ uint16_t calcHeaterPwm( float delta )
   */
 
 float currentDT = 0;
+uint16_t currentPwm = 0;
+#pragma optimize = none
 void temperatureAndPwmControlTaskFunc( void const *argument ) 
 {
 
@@ -423,6 +425,8 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
   deviceCurrentState.workSetting.targetTemp = 110;
   deviceCurrentState.workSetting.time = 1;
   
+  
+
   while( 1 ) {
     
     // get values:
@@ -445,8 +449,8 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     {
     case STATE_WORKING: {
       if( dt > 0 ) {
-        uint16_t pwm = calcHeaterPwm( dt );
-        setHeaterPwm( pwm );
+        int16_t pwm = calcHeaterPwm( dt );
+        if( pwm >= 0 ) setHeaterPwm( pwm );
       }
       else {
         setHeaterPwm( 0 );

@@ -29,22 +29,6 @@ void setMotorPwm( int value ) {
   if( value < 0 ) value = 0;
   if( value > 1 ) deviceCurrentState.motorEnabled = 1;
   uint16_t ccr = value;//TIM_DEFAULT_PERIOD / 101 * value;
-// 
-//  HAL_TIM_PWM_Stop( &htim1, MOTOR_CHANNEL ); // stop generation of pwm
-//  TIM_OC_InitTypeDef sConfigOC;
-//  htim1.Init.Period = TIM_DEFAULT_PERIOD; // set the period duration
-//  HAL_TIM_PWM_Init( &htim1 ); // reinititialise with new period value
-//  
-//  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-//  sConfigOC.Pulse = ccr;
-//  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-//  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-//  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-//  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-//  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-//  HAL_TIM_PWM_ConfigChannel( &htim1, &sConfigOC, MOTOR_CHANNEL );
-//  TIM1->CCR1 = ccr;
-//  HAL_TIM_PWM_Start( &htim1, MOTOR_CHANNEL ); // start pwm generation
   __HAL_TIM_SET_COMPARE( &htim1, MOTOR_CHANNEL, ccr );
   deviceCurrentState.motorPwm = ccr;
 }
@@ -61,30 +45,8 @@ void setBlowerPwm( int value ) {
     if(value > (TIM_DEFAULT_PERIOD ) ) value = TIM_DEFAULT_PERIOD;
     if( value > 0 ) deviceCurrentState.blowerEnabled = 1;
   __HAL_TIM_SET_COMPARE( &htim1, BLOWER_CHANNEL, value );
+  deviceCurrentState.blowerPwm = value;
   return;
-  if( value > (TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2) ) ) {
-    value = TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2 );
-  }
-  if( value < 0 ) value = 0;
-  if( value > 1 ) deviceCurrentState.blowerEnabled = 1;
-  uint16_t ccr = value;//TIM_DEFAULT_PERIOD / 101 * value;
- 
-//  HAL_TIM_PWM_Stop( &htim1, BLOWER_CHANNEL ); // stop generation of pwm
-//  TIM_OC_InitTypeDef sConfigOC;
-//  htim1.Init.Period = TIM_DEFAULT_PERIOD; // set the period duration
-//  HAL_TIM_PWM_Init( &htim1 ); // reinititialise with new period value
-//  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-//  
-//  sConfigOC.Pulse = ccr; // set the pulse duration
-//  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-//  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-//  HAL_TIM_PWM_ConfigChannel( &htim1, &sConfigOC, BLOWER_CHANNEL );
-//  TIM1->CCR4 = ccr;
-//  HAL_TIM_PWM_Start( &htim1, BLOWER_CHANNEL ); // start pwm generation
-  
-  __HAL_TIM_SET_COMPARE( &htim1, BLOWER_CHANNEL, ccr );
-  
-  deviceCurrentState.blowerPwm = ccr;
 }
 void disableBlower( void ) {
   if( deviceCurrentState.blowerEnabled ) {
