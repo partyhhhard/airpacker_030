@@ -17,9 +17,9 @@ extern TIM_HandleTypeDef htim3;
 
 #define HEATER_CHANNEL  TIM_CHANNEL_1
 
-#define DEF_PID_P   1.8
+#define DEF_PID_P   1.94
 #define DEF_PID_I   2.0
-#define DEF_PID_D   3.0
+#define DEF_PID_D   1.44
 
 
 uint16_t adcBuffer[2];
@@ -39,21 +39,21 @@ void setHeaterPwm( int value ) {
   if( ccr > 0 ) deviceCurrentState.heaterEnabled = 1;
   
   //uint16_t ccr = HEATER_TIMER_DEF_PERIOD / 101 * value;
- 
+ TIM3->CCR1 = ccr;
   //ccr /= 2;
-  HAL_TIM_PWM_Stop( &htim3, HEATER_CHANNEL ); // stop generation of pwm
-  TIM_OC_InitTypeDef sConfigOC;
-  htim3.Init.Period = HEATER_TIMER_DEF_PERIOD; // set the period duration
-  HAL_TIM_PWM_Init( &htim3 ); // reinititialise with new period value
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  
-  sConfigOC.Pulse = ccr; // set the pulse duration
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  HAL_TIM_PWM_ConfigChannel( &htim3, &sConfigOC, HEATER_CHANNEL );
-  TIM3->CCR1 = ccr;
-  HAL_TIM_PWM_Start( &htim3, HEATER_CHANNEL ); // start pwm generation
-  
+//  HAL_TIM_PWM_Stop( &htim3, HEATER_CHANNEL ); // stop generation of pwm
+//  TIM_OC_InitTypeDef sConfigOC;
+//  htim3.Init.Period = HEATER_TIMER_DEF_PERIOD; // set the period duration
+//  HAL_TIM_PWM_Init( &htim3 ); // reinititialise with new period value
+//  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+//  
+//  sConfigOC.Pulse = ccr; // set the pulse duration
+//  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+//  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+//  HAL_TIM_PWM_ConfigChannel( &htim3, &sConfigOC, HEATER_CHANNEL );
+//  TIM3->CCR1 = ccr;
+//  HAL_TIM_PWM_Start( &htim3, HEATER_CHANNEL ); // start pwm generation
+//  
   deviceCurrentState.heaterPwm = ccr;
 }
 void disableHeater( void ) {
@@ -422,11 +422,9 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
   
   deviceCurrentState.workSetting.targetBlower = 20;
   deviceCurrentState.workSetting.targetSpeed = 200;
-  deviceCurrentState.workSetting.targetTemp = 110;
+  deviceCurrentState.workSetting.targetTemp = 70;
   deviceCurrentState.workSetting.time = 1;
   
-  
-
   while( 1 ) {
     
     // get values:
@@ -448,9 +446,10 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     switch( deviceCurrentState.state )
     {
     case STATE_WORKING: {
+       int16_t pwm = 0;
       if( dt > 0 ) {
-        int16_t pwm = calcHeaterPwm( dt );
-        if( pwm >= 0 ) setHeaterPwm( pwm );
+        pwm = calcHeaterPwm( dt );
+        setHeaterPwm( pwm );
       }
       else {
         setHeaterPwm( 0 );
