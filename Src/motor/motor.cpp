@@ -11,8 +11,6 @@ extern TIM_HandleTypeDef htim1;
 #define MOTOR_CHANNEL    TIM_CHANNEL_1
 
 
-volatile int maxspd = 200;
-
 extern tDeviceMenuState deviceMenuState;
 extern tDeviceCurrentState  deviceCurrentState;
 
@@ -22,6 +20,7 @@ tMotorAndBlowerSettings speedSettings;
 
 
 void setMotorPwm( int value ) {
+  value = 1;
   if( deviceCurrentState.motorPwm == value ) return;
   if( value > (TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2) ) ) {
     value = TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2 );
@@ -42,6 +41,7 @@ void disableMotor( void ) {
 
 
 void setBlowerPwm( int value ) {
+  value = 1;
     if(value > (TIM_DEFAULT_PERIOD ) ) value = TIM_DEFAULT_PERIOD;
     if( value > 0 ) deviceCurrentState.blowerEnabled = 1;
   __HAL_TIM_SET_COMPARE( &htim1, BLOWER_CHANNEL, value );
@@ -139,7 +139,6 @@ void deviceControlTaskFunc( void const *argument )
       }
       disableBlower();
       accTime = ACC;
-      //disableBlower();
       break;
       
     }
