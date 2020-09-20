@@ -10,6 +10,7 @@ uint32_t timeReleased[6] = {0};
 #define LONG_BUTON_MIN_TIME                 500
 
 extern SPI_HandleTypeDef hspi1;
+extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim6;
 EXTI_HandleTypeDef lineButtonOne;
 EXTI_HandleTypeDef lineButtonTwo;
@@ -294,7 +295,7 @@ uint32_t time = 0;
 int timeFromLastButton( void ) {
   
   uint32_t max = 0;
-  uint32_t min = 0xFFFFFFFFF;
+  uint32_t min = 0x0FFFFFFFF;
   
   uint32_t curTime = HAL_GetTick();
   for( int i = 0; i < 4; i++ ) {
@@ -310,7 +311,7 @@ int timeFromLastButton( void ) {
 time = min;
   return min;
 }
-int showMenu()
+void showMenu()
 {
   static int8_t updateValuePeriod = 2;
   
@@ -405,13 +406,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
   case BUTTON_ONE_PIN: {
     if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_ONE_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[5] = HAL_GetTick();
+      timePressed[4] = HAL_GetTick();
       buttonOne.state = PRESSED;
       buttonOne.handled = 0;
     }
     else {
-      timeReleased[5] = HAL_GetTick();
-      buttonOne.timePressed = timeReleased[5] - timePressed[5];
+      timeReleased[4] = HAL_GetTick();
+      buttonOne.timePressed = timeReleased[4] - timePressed[4];
       buttonOne.state = RELEASED;
       buttonOne.handled = 0;
     }
@@ -420,13 +421,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   
   case BUTTON_TWO_PIN: {
     if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_TWO_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[6] = HAL_GetTick();
+      timePressed[5] = HAL_GetTick();
       buttonTwo.state = PRESSED;
       buttonTwo.handled = 0;
     }
     else {
-      timeReleased[6] = HAL_GetTick();
-      buttonTwo.timePressed = timeReleased[6] - timePressed[6];
+      timeReleased[5] = HAL_GetTick();
+      buttonTwo.timePressed = timeReleased[5] - timePressed[5];
       buttonTwo.state = RELEASED;
       buttonTwo.handled = 0;
     }
