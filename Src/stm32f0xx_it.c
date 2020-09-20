@@ -134,8 +134,13 @@ void SysTick_Handler(void)
 void EXTI4_15_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
-
-  /* USER CODE END EXTI4_15_IRQn 0 */
+if( __HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_10) ) {
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+  }
+  if( __HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_11) ) {
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+  }
+ 
  if( __HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_12) ) {
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_12);
   }
@@ -148,7 +153,7 @@ void EXTI4_15_IRQHandler(void)
      if( __HAL_GPIO_EXTI_GET_FLAG( GPIO_PIN_15 ) ) {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
  }
- 
+  /* USER CODE END EXTI4_15_IRQn 0 */
   /* USER CODE BEGIN EXTI4_15_IRQn 1 */
 
   /* USER CODE END EXTI4_15_IRQn 1 */

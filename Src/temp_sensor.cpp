@@ -21,6 +21,8 @@ extern TIM_HandleTypeDef htim3;
 #define DEF_PID_I   2.0
 #define DEF_PID_D   1.44
 
+float currentDT = 0;
+uint16_t currentPwm = 0;
 
 uint16_t adcBuffer[2];
 int adcIndex = 0;
@@ -28,32 +30,15 @@ uint8_t adcDataReadyFlag = 0;
 
 #pragma optimize = none
 void setHeaterPwm( int value ) {
-//  if( TIM3->CCR1 != value ) {
-//    TIM3->CCR1 = value;
-//  }
+
   uint16_t ccr = HEATER_TIMER_DEF_PERIOD / 101 * value;
   if( ccr > (HEATER_TIMER_DEF_PERIOD - (HEATER_TIMER_DEF_PERIOD / 100 * 2) ) ) {
     ccr = HEATER_TIMER_DEF_PERIOD - (HEATER_TIMER_DEF_PERIOD / 100 * 2 );
   }
-  if( ccr < 0 ) value = 0;
+  
   if( ccr > 0 ) deviceCurrentState.heaterEnabled = 1;
   
-  //uint16_t ccr = HEATER_TIMER_DEF_PERIOD / 101 * value;
  TIM3->CCR1 = ccr;
-  //ccr /= 2;
-//  HAL_TIM_PWM_Stop( &htim3, HEATER_CHANNEL ); // stop generation of pwm
-//  TIM_OC_InitTypeDef sConfigOC;
-//  htim3.Init.Period = HEATER_TIMER_DEF_PERIOD; // set the period duration
-//  HAL_TIM_PWM_Init( &htim3 ); // reinititialise with new period value
-//  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-//  
-//  sConfigOC.Pulse = ccr; // set the pulse duration
-//  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-//  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-//  HAL_TIM_PWM_ConfigChannel( &htim3, &sConfigOC, HEATER_CHANNEL );
-//  TIM3->CCR1 = ccr;
-//  HAL_TIM_PWM_Start( &htim3, HEATER_CHANNEL ); // start pwm generation
-//  
   deviceCurrentState.heaterPwm = ccr;
 }
 void disableHeater( void ) {
@@ -392,8 +377,6 @@ uint16_t calcHeaterPwm( float delta )
   * @retval None
   */
 
-float currentDT = 0;
-uint16_t currentPwm = 0;
 #pragma optimize = none
 void temperatureAndPwmControlTaskFunc( void const *argument ) 
 {

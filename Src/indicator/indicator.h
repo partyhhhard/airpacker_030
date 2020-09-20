@@ -10,11 +10,12 @@
 //#define sege ((uint8_t)0x04)
 //#define segf ((uint8_t)0x02)
 //#define segg ((uint8_t)0x01)
-
+#define BUTTON_ONE_PIN       GPIO_PIN_10
+#define BUTTON_TWO_PIN       GPIO_PIN_11
 #define BUTTON_RIGHT_PIN     GPIO_PIN_12
 #define BUTTON_LEFT_PIN      GPIO_PIN_13
-#define BUTTON_GO_PIN        GPIO_PIN_14
-#define BUTTON_EDIT_PIN      GPIO_PIN_15
+#define BUTTON_EDIT_PIN      GPIO_PIN_14
+#define BUTTON_GO_PIN        GPIO_PIN_15
 
 #define BUTTON_PORT      GPIOB
 

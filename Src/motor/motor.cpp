@@ -110,15 +110,10 @@ void deviceControlTaskFunc( void const *argument )
         }
         else {
           setMotorPwm( deviceCurrentState.workSetting.targetSpeed );
-          //setBlowerPwm( deviceCurrentState.workSetting.targetBlower );
         }
       }
       decTime = DEC;
-      //if( deviceCurrentState.minTempAchieved ) {
-        // min tem achieved, can enable motor
-        //setMotorPwm( deviceCurrentState.workSetting.targetSpeed );
-        //setBlowerPwm( deviceCurrentState.workSetting.targetBlower );
-      //}
+ 
       break;
     
     case STATE_WAITING:

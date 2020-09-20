@@ -59,7 +59,8 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart1;
 
 
-
+extern EXTI_HandleTypeDef lineButtonOne;
+extern EXTI_HandleTypeDef lineButtonTwo;
 extern EXTI_HandleTypeDef lineGoButton;
 extern EXTI_HandleTypeDef lineEditButton;
 extern EXTI_HandleTypeDef lineLeftButton;
@@ -614,7 +615,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   //GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM; // no need to be defined according to https://www.st.com/resource/en/user_manual/dm00122015-description-of-stm32f0-hal-and-lowlayer-drivers-stmicroelectronics.pdf
@@ -623,6 +624,18 @@ static void MX_GPIO_Init(void)
 //  
 //
 // 
+  buttonExti.Mode = EXTI_MODE_INTERRUPT;
+  buttonExti.Trigger = EXTI_TRIGGER_RISING_FALLING;
+  buttonExti.GPIOSel = EXTI_GPIOB;
+  buttonExti.Line = EXTI_LINE_10;
+  HAL_EXTI_SetConfigLine( &lineButtonOne, &buttonExti );
+  
+  buttonExti.Mode = EXTI_MODE_INTERRUPT;
+  buttonExti.Trigger = EXTI_TRIGGER_RISING_FALLING;
+  buttonExti.GPIOSel = EXTI_GPIOB;
+  buttonExti.Line = EXTI_LINE_11;
+  HAL_EXTI_SetConfigLine( &lineButtonTwo, &buttonExti );
+  
   buttonExti.Mode = EXTI_MODE_INTERRUPT;
   buttonExti.Trigger = EXTI_TRIGGER_RISING_FALLING;
   buttonExti.GPIOSel = EXTI_GPIOB;
