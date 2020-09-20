@@ -28,7 +28,7 @@
 #include "pcconn.h"
 #include "motor.h"
 #include "indicator.h"
-#include "temp_sensor.h"|
+#include "temp_sensor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -120,6 +120,7 @@ int main(void)
   __HAL_DBGMCU_FREEZE_TIM1();
   __HAL_DBGMCU_FREEZE_TIM3();
   __HAL_DBGMCU_FREEZE_TIM6(); 
+  __HAL_DBGMCU_FREEZE_I2C1_TIMEOUT();
  
   /* USER CODE END 1 */
 
@@ -664,6 +665,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
   GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
