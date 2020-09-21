@@ -349,8 +349,6 @@ void showMenu()
   updateValuePeriod--;
 }
 
-
-#pragma optimize = none
 void indicatorTaskFunc( const void *argument )
 {
   uint8_t data[7] = { sega, segb, segc, segd, sege, segf, segg };

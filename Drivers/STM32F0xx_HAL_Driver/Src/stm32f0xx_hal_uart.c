@@ -3626,6 +3626,7 @@ static void UART_EndTransmit_IT(UART_HandleTypeDef *huart)
   * @param huart UART handle.
   * @retval None
   */
+#pragma optimize = none
 static void UART_RxISR_8BIT(UART_HandleTypeDef *huart)
 {
   uint16_t uhMask = huart->Mask;

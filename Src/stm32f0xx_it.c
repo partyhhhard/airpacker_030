@@ -23,6 +23,7 @@
 #include "stm32f0xx_it.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "pcconn.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -262,6 +263,8 @@ void SPI1_IRQHandler(void)
   /* USER CODE END SPI1_IRQn 1 */
 }
 
+extern uint8_t __byte;
+extern volatile uint8_t canReceive;
 /**
   * @brief This function handles USART1 global interrupt.
   */
@@ -272,7 +275,7 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-
+  if( canReceive ) HAL_UART_Receive_IT( &huart1, &__byte, 1 );
   /* USER CODE END USART1_IRQn 1 */
 }
 
