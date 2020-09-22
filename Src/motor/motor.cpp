@@ -6,6 +6,7 @@
 #include "cmsis_os.h"
 #include "indicator.h"
 
+extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim1;
 #define BLOWER_CHANNEL   TIM_CHANNEL_4
 #define MOTOR_CHANNEL    TIM_CHANNEL_1
@@ -67,6 +68,7 @@ void disableAll( void ) {
   */
 void deviceControlTaskFunc( void const *argument ) 
 {
+  int iwdgReloadPeriod = 3000;
   int taskPeriod = 10;
   memset( &speedSettings, 0, sizeof( speedSettings ) );
   
@@ -137,7 +139,14 @@ void deviceControlTaskFunc( void const *argument )
       break;
       
     }
+    
+    
+    if( iwdgReloadPeriod <= 0 ) {
+      __HAL_IWDG_RELOAD_COUNTER( &hiwdg );
+      iwdgReloadPeriod = 3000;
+    }
 
     osDelay(taskPeriod);
+    iwdgReloadPeriod -= taskPeriod;
   }
 }

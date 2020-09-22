@@ -97,10 +97,12 @@ typedef enum {
   STATE_WAITING = 0,
   STATE_EDIT_SETTINGS,
   STATE_WORKING,
+  STATE_IDLE,
 } tDeviceState;
 
 typedef struct {
   tDeviceState state;
+  tDeviceState prevState;
   tWorkSetting workSetting;
   int temperature;
   uint16_t heaterPwm;
@@ -109,6 +111,7 @@ typedef struct {
   bool heaterEnabled;
   bool motorEnabled;
   bool blowerEnabled;
+  bool timeModeEnabled;
   float motorControlVoltage;
   uint8_t minTempAchieved;
   uint32_t stateChangedTime;

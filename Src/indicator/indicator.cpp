@@ -164,110 +164,126 @@ void showValue( int *value, tMenuState *state  ) {
 }
 
 
-void buttonOneHandler( void )
+void buttonOneHandler( tDeviceCurrentState *cs )
 {
-}
-void buttonTwoHandler( void )
-{
-}
-void buttonGoHandler( uint32_t *result )
-{
-  if( buttonGo.ticksBeforeCheck == 0 ) {
-    if( buttonGo.handled == 1 ) {
-      *result = 0; 
-      return;
+  if( buttonOne.ticksBeforeCheck == 0 && buttonOne.handled == 0 ) {
+    switch( buttonOne.state )
+    {
+    case PRESSED:
+      buttonOne.handled = 1;
+      break;
+      
+    case RELEASED:
+      if( buttonOne.timePressed < LONG_BUTON_MIN_TIME ) {
+        if( cs->state != STATE_WORKING ) cs->timeModeEnabled = !cs->timeModeEnabled;
+      }
+      buttonOne.handled = 1;
+      break;
     }
+  }
+   if( buttonOne.ticksBeforeCheck > 0 ) buttonOne.ticksBeforeCheck--;
+}
+void buttonTwoHandler( tDeviceCurrentState *cs )
+{
+  if( buttonTwo.ticksBeforeCheck == 0  && buttonTwo.handled == 0) {
+    switch( buttonTwo.state )
+    {
+    case PRESSED:
+      
+      buttonTwo.handled = 1;
+      break;
+      
+    case RELEASED:
+      if( buttonTwo.timePressed < LONG_BUTON_MIN_TIME ) {
+        if( cs->state != STATE_IDLE ) cs->state = STATE_IDLE;
+      }
+      buttonTwo.handled = 1;
+      break;
+    }
+  }
+   if( buttonTwo.ticksBeforeCheck > 0 ) buttonTwo.ticksBeforeCheck--;
+}
+void buttonGoHandler( tDeviceCurrentState *cs )
+{
+  if( buttonGo.ticksBeforeCheck == 0 && buttonGo.handled == 0 ) {
     if( buttonGo.state == RELEASED ) {
       if( deviceCurrentState.state == STATE_WAITING ) {
-        deviceCurrentState.state = STATE_WORKING;
+        cs->state = STATE_WORKING;
       }
       else {
-        deviceCurrentState.state = STATE_WAITING;
+        cs->state = STATE_WAITING;
       }
     }
     //buttonGo.ticksBeforeCheck = 1000;
     buttonGo.handled = 1;
-    *result = 1;
   }
   if( buttonGo.ticksBeforeCheck > 0 ) buttonGo.ticksBeforeCheck--;
   return;
 }
 
-void buttonEditHandler( uint32_t *result )
-{
-  
-  if( buttonEdit.handled == 1 ) {
-    *result = 0; 
-    return;
+void buttonEditHandler( tDeviceCurrentState *cs )
+{ 
+  if( buttonEdit.handled == 0 ) {
+    switch( deviceMenuState.menuState )
+    {
+    case SHOW_TEMP: deviceMenuState.menuState = SHOW_SPEED; break;
+    case SHOW_SPEED: deviceMenuState.menuState = EDIT_TIME; break;
+    case EDIT_TIME: deviceMenuState.menuState = SHOW_TEMP; break;
+    }
+    buttonEdit.handled = 1;
   }
-  switch( deviceMenuState.menuState )
-  {
-  case SHOW_TEMP: deviceMenuState.menuState = SHOW_SPEED; break;
-  case SHOW_SPEED: deviceMenuState.menuState = EDIT_TIME; break;
-  case EDIT_TIME: deviceMenuState.menuState = SHOW_TEMP; break;
-  }
-  buttonEdit.handled = 1;
-  *result = 1;
   return;
 }
-void buttonLeftHandler( uint32_t *result )
+void buttonLeftHandler( tDeviceCurrentState *cs )
 {
-  if( buttonLeft.ticksBeforeCheck == 0 ) {
-    if( buttonLeft.handled == 1 ) {
-      *result = 0; 
-      return;
-    }
+  if( buttonLeft.ticksBeforeCheck == 0 && buttonLeft.handled == 0 ) {
+  
     switch( deviceMenuState.menuState )
     {
     case SHOW_TEMP:
       if( HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
-        deviceCurrentState.workSetting.targetTemp -= 5;
+        cs->workSetting.targetTemp -= 5;
         buttonLeft.ticksBeforeCheck = 75;
       }
       else if (buttonLeft.state == RELEASED) {
-        deviceCurrentState.workSetting.targetTemp--;
+        cs->workSetting.targetTemp--;
         buttonLeft.handled = 1;
         buttonRight.ticksBeforeCheck = 2;
       }
-      if( deviceCurrentState.workSetting.targetTemp <= 0 ) deviceCurrentState.temperature = 0;
+      if( cs->workSetting.targetTemp <= 0 ) cs->temperature = 0;
       break;
     case SHOW_SPEED:
       if(  HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
-        deviceCurrentState.workSetting.targetSpeed -= 5;
+        cs->workSetting.targetSpeed -= 5;
         buttonLeft.ticksBeforeCheck = 75;
       }
       else if ( buttonLeft.state == RELEASED) {
-        deviceCurrentState.workSetting.targetSpeed--;
+        cs->workSetting.targetSpeed--;
         buttonLeft.handled = 1;
         buttonRight.ticksBeforeCheck = 2;
       }
-      if( deviceCurrentState.workSetting.targetSpeed <= 0 ) deviceCurrentState.motorPwm = 0;
+      if( cs->workSetting.targetSpeed <= 0 ) deviceCurrentState.motorPwm = 0;
       break;
     }
   }
   if( buttonLeft.ticksBeforeCheck > 0 ) buttonLeft.ticksBeforeCheck--;
-  return;
 }
-void buttonRightHandler( uint32_t *result )
+
+void buttonRightHandler( tDeviceCurrentState *cs )
 {
-  if (buttonRight.ticksBeforeCheck == 0)
+  if (buttonRight.ticksBeforeCheck == 0 && buttonRight.handled == 0)
   {
-    if (buttonRight.handled == 1)
-    {
-      *result = 0;
-      return;
-    }
-    switch (deviceMenuState.menuState)
+    switch (deviceMenuState.menuState )
     {
     case SHOW_TEMP:
       if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
-        deviceCurrentState.workSetting.targetTemp += 5;
+        cs->workSetting.targetTemp += 5;
         buttonRight.ticksBeforeCheck = 75;
       }
       else if (buttonRight.state == RELEASED)
       {
-        deviceCurrentState.workSetting.targetTemp++;
+        cs->workSetting.targetTemp++;
         buttonRight.handled = 1;
         buttonRight.ticksBeforeCheck = 2;
       }
@@ -275,12 +291,12 @@ void buttonRightHandler( uint32_t *result )
     case SHOW_SPEED:
       if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
-        deviceCurrentState.workSetting.targetSpeed += 5;
+        cs->workSetting.targetSpeed += 5;
         buttonRight.ticksBeforeCheck = 75;
       }
       else if (buttonRight.state == RELEASED)
       {
-        deviceCurrentState.workSetting.targetSpeed++;
+        cs->workSetting.targetSpeed++;
         buttonRight.handled = 1;
         buttonRight.ticksBeforeCheck = 2;
       }
@@ -375,10 +391,12 @@ void indicatorTaskFunc( const void *argument )
   while(1) {
     
     showMenu();
-    buttonEditHandler( &result );
-    buttonGoHandler( &result );
-    buttonLeftHandler( &result );
-    buttonRightHandler( &result );
+    buttonOneHandler( &deviceCurrentState );
+    buttonTwoHandler( &deviceCurrentState );
+    buttonEditHandler( &deviceCurrentState );
+    buttonGoHandler( &deviceCurrentState);
+    buttonLeftHandler( &deviceCurrentState );
+    buttonRightHandler( &deviceCurrentState );
     
     
     osDelay(1);

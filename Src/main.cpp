@@ -143,7 +143,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC_Init();
-  //MX_IWDG_Init();
+  MX_IWDG_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
@@ -739,15 +739,10 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-  uint32_t iwdgReloadPeriod = 3000;
  
   /* Infinite loop */
   for(;;)
   {
-//    if( --iwdgReloadPeriod == 0 ) {
-//      __HAL_IWDG_RELOAD_COUNTER( &hiwdg );
-//      iwdgReloadPeriod = 3000;
-//    }
     osDelay(1);
   }
   /* USER CODE END 5 */ 
