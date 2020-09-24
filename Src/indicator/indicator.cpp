@@ -189,14 +189,15 @@ void buttonTwoHandler( tDeviceCurrentState *cs )
     switch( buttonTwo.state )
     {
     case PRESSED:
-      
+      cs->state = STATE_IDLE;
       buttonTwo.handled = 1;
       break;
       
     case RELEASED:
-      if( buttonTwo.timePressed < LONG_BUTON_MIN_TIME ) {
-        if( cs->state != STATE_IDLE ) cs->state = STATE_IDLE;
-      }
+//      if( buttonTwo.timePressed < LONG_BUTON_MIN_TIME ) {
+//        if( cs->state != STATE_IDLE ) cs->state = STATE_IDLE;
+//      }
+      cs->state = STATE_WAITING;
       buttonTwo.handled = 1;
       break;
     }
@@ -242,8 +243,8 @@ void buttonLeftHandler( tDeviceCurrentState *cs )
     {
     case SHOW_TEMP:
       if( HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
-        cs->workSetting.targetTemp -= 5;
-        buttonLeft.ticksBeforeCheck = 75;
+        cs->workSetting.targetTemp -= 3;
+        buttonLeft.ticksBeforeCheck = 125;
       }
       else if (buttonLeft.state == RELEASED) {
         cs->workSetting.targetTemp--;
@@ -254,8 +255,8 @@ void buttonLeftHandler( tDeviceCurrentState *cs )
       break;
     case SHOW_SPEED:
       if(  HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
-        cs->workSetting.targetSpeed -= 5;
-        buttonLeft.ticksBeforeCheck = 75;
+        cs->workSetting.targetSpeed -= 3;
+        buttonLeft.ticksBeforeCheck = 125;
       }
       else if ( buttonLeft.state == RELEASED) {
         cs->workSetting.targetSpeed--;
@@ -278,8 +279,8 @@ void buttonRightHandler( tDeviceCurrentState *cs )
     case SHOW_TEMP:
       if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
-        cs->workSetting.targetTemp += 5;
-        buttonRight.ticksBeforeCheck = 75;
+        cs->workSetting.targetTemp += 3;
+        buttonRight.ticksBeforeCheck = 125;
       }
       else if (buttonRight.state == RELEASED)
       {
@@ -291,8 +292,8 @@ void buttonRightHandler( tDeviceCurrentState *cs )
     case SHOW_SPEED:
       if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
-        cs->workSetting.targetSpeed += 5;
-        buttonRight.ticksBeforeCheck = 75;
+        cs->workSetting.targetSpeed += 3;
+        buttonRight.ticksBeforeCheck = 125;
       }
       else if (buttonRight.state == RELEASED)
       {
@@ -335,13 +336,13 @@ void showMenu()
     switch( deviceMenuState.menuState ) 
     {
     case SHOW_TEMP:
-     showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
-//      if( timeFromLastButton() > 1600 && deviceMenuState.flagEdit != 1 ) {
-//        showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
-//      }
-//      else {
-//        showValue( &deviceCurrentState.workSetting.targetTemp, &deviceMenuState.menuState );
-//      }
+    // showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
+      if( timeFromLastButton() > 1600 && deviceMenuState.flagEdit != 1 ) {
+        showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
+      }
+      else {
+        showValue( &deviceCurrentState.workSetting.targetTemp, &deviceMenuState.menuState );
+      }
       break;
       
     case SHOW_SPEED:   

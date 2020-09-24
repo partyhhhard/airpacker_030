@@ -17,9 +17,9 @@ extern TIM_HandleTypeDef htim3;
 
 #define HEATER_CHANNEL  TIM_CHANNEL_1
 
-#define DEF_PID_P   1.94
-#define DEF_PID_I   2.0
-#define DEF_PID_D   1.44
+#define DEF_PID_P   10.0 //4.25
+#define DEF_PID_I   4.0  //2.0
+#define DEF_PID_D   2.5  //1.0
 
 float currentDT = 0;
 uint16_t currentPwm = 0;
@@ -31,15 +31,16 @@ uint8_t adcDataReadyFlag = 0;
 #pragma optimize = none
 void setHeaterPwm( int value ) {
 
-  uint16_t ccr = HEATER_TIMER_DEF_PERIOD / 101 * value;
+  if( value < 0 ) value = 0;
+  int ccr = HEATER_TIMER_DEF_PERIOD / 101 * value;
   if( ccr > (HEATER_TIMER_DEF_PERIOD - (HEATER_TIMER_DEF_PERIOD / 100 * 2) ) ) {
     ccr = HEATER_TIMER_DEF_PERIOD - (HEATER_TIMER_DEF_PERIOD / 100 * 2 );
   }
   
   if( ccr > 0 ) deviceCurrentState.heaterEnabled = 1;
-  
+  if( ccr < 0 ) ccr = 0;
  TIM3->CCR1 = ccr;
-  deviceCurrentState.heaterPwm = ccr;
+ deviceCurrentState.heaterPwm = ccr;
 }
 void disableHeater( void ) {
   if( deviceCurrentState.heaterEnabled != 0 ) {
@@ -357,9 +358,9 @@ void resetPid()
 }
 
 #pragma optimize = none
-uint16_t calcHeaterPwm( float delta ) 
+int calcHeaterPwm( float delta ) 
 {
-  uint16_t res = 0;
+  int res = 0;
   
   pidState.ierr += delta;
   float I = 1.0 / (pidSettings.i * pidState.ierr * pidSettings.dt);
@@ -405,8 +406,19 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
   
   deviceCurrentState.workSetting.targetBlower = 20;
   deviceCurrentState.workSetting.targetSpeed = 200;
-  deviceCurrentState.workSetting.targetTemp = 70;
+  deviceCurrentState.workSetting.targetTemp = 100;
   deviceCurrentState.workSetting.time = 1;
+  
+//  for( int i = 50; i > -30; i-- ) {
+//     volatile int pwm = calcHeaterPwm( i );
+//     setHeaterPwm( pwm );
+//     osDelay(20);
+//  }
+//    for( int i = -30; i > 50; i++ ) {
+//     volatile int pwm = calcHeaterPwm( i );
+//     setHeaterPwm( pwm );
+//     osDelay(20);
+//  }
   
   while( 1 ) {
     
@@ -420,7 +432,7 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     
     float dt = deviceCurrentState.workSetting.targetTemp - deviceCurrentState.temperature;
     currentDT = dt;
-    if( dt > 10 ) { //deviceCurrentState.workSetting.targetTemp / 100 * 12 ) {
+    if( dt > 5 ) { //deviceCurrentState.workSetting.targetTemp / 100 * 12 ) {
       deviceCurrentState.minTempAchieved = 0;
     }
     else {
@@ -429,7 +441,7 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     switch( deviceCurrentState.state )
     {
     case STATE_WORKING: {
-       int16_t pwm = 0;
+       int pwm = 0;
       if( dt > 0 ) {
         pwm = calcHeaterPwm( dt );
         setHeaterPwm( pwm );
@@ -452,21 +464,24 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     
 
     
-    // set flag edit if changing target speed, 
-    if( fabs(deviceCurrentState.workSetting.targetSpeed - prevSpeed) > 2 ) { 
-      deviceMenuState.flagEdit = 1;
-      editDelay = 14;
-    }
-    else {
-      if( editDelay == 0 ) {
-        deviceMenuState.flagEdit = 0;
-      }
-    }    
-    if( editDelay == 0 ) {
-      deviceMenuState.flagEdit = 0;
-      editDelay = 14;
-    }
+//    // set flag edit if changing target speed, 
+//    if( fabs(deviceCurrentState.workSetting.targetSpeed - prevSpeed) > 2 ) { 
+//      deviceMenuState.flagEdit = 1;
+//      editDelay = 14;
+//    }
+//    else {
+//      if( editDelay == 0 ) {
+//        deviceMenuState.flagEdit = 0;
+//      }
+//    }    
+//    if( editDelay == 0 ) {
+//      deviceMenuState.flagEdit = 0;
+//      editDelay = 14;
+//    }
     
+    if( deviceCurrentState.temperature > RESET_TEMPERATURE ) {
+        HAL_NVIC_SystemReset();
+    }
     
     prevSpeed = deviceCurrentState.workSetting.targetSpeed;
     editDelay--;

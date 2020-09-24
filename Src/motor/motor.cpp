@@ -1,10 +1,13 @@
 
+#include "temp_sensor.h"
 #include "string.h"
 #include "motor.h"
 #include "math.h"
 #include "stm32f0xx_hal.h"
 #include "cmsis_os.h"
 #include "indicator.h"
+
+#define RESET_TEMPERATURE       125
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim1;
@@ -21,8 +24,8 @@ tMotorAndBlowerSettings speedSettings;
 
 
 void setMotorPwm( int value ) {
-  value = 1;
-  if( deviceCurrentState.motorPwm == value ) return;
+
+  //if( deviceCurrentState.motorPwm == value ) return;
   if( value > (TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2) ) ) {
     value = TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD / 100 * 2 );
   }
@@ -30,37 +33,45 @@ void setMotorPwm( int value ) {
   if( value > 1 ) deviceCurrentState.motorEnabled = 1;
   uint16_t ccr = value;//TIM_DEFAULT_PERIOD / 101 * value;
   __HAL_TIM_SET_COMPARE( &htim1, MOTOR_CHANNEL, ccr );
-  deviceCurrentState.motorPwm = ccr;
+  deviceCurrentState.motorCCR = ccr;
 }
 void disableMotor( void ) {
-  if( deviceCurrentState.motorEnabled ) {
+  //if( deviceCurrentState.motorEnabled ) {
     deviceCurrentState.motorEnabled = 0;
     setMotorPwm( 0 );
-  }
+  //}
  
 }
 
 
 void setBlowerPwm( int value ) {
-  value = 1;
-    if(value > (TIM_DEFAULT_PERIOD ) ) value = TIM_DEFAULT_PERIOD;
+
+    //if(value > ( TIM_DEFAULT_PERIOD ) ) value = TIM_DEFAULT_PERIOD;
     if( value > 0 ) deviceCurrentState.blowerEnabled = 1;
   __HAL_TIM_SET_COMPARE( &htim1, BLOWER_CHANNEL, value );
-  deviceCurrentState.blowerPwm = value;
+  deviceCurrentState.blowerCCR = value;
   return;
 }
 void disableBlower( void ) {
-  if( deviceCurrentState.blowerEnabled ) {
+  //if( deviceCurrentState.blowerEnabled ) {
     deviceCurrentState.blowerEnabled = 0;
     setBlowerPwm( 0 );
-  }
+  //}
  
 }
 void disableAll( void ) {
   disableMotor();
   disableBlower();
 }
+const int ACC = 5000;
+const int DEC = 2000;
+int accTime = ACC;
 
+int accStep = 0;
+
+
+int decTime = 0;
+int decStep = 0;
 /**
   * @brief  Function implementing the motor and blower control thread.
   * @param  argument: Not used 
@@ -69,7 +80,7 @@ void disableAll( void ) {
 void deviceControlTaskFunc( void const *argument ) 
 {
   int iwdgReloadPeriod = 3000;
-  int taskPeriod = 10;
+  int taskPeriod = 1;
   memset( &speedSettings, 0, sizeof( speedSettings ) );
   
   speedSettings.blowerSpeed = 50;
@@ -79,14 +90,9 @@ void deviceControlTaskFunc( void const *argument )
   HAL_TIM_PWM_Start( &htim1, BLOWER_CHANNEL ); 
   
   disableAll();
-  int minStartSpeed = TIM_ONE_PERCENT * 10;
-  const int ACC = 2000;
-  int accTime = ACC;
-  int accStep = 0;
+  int minStartSpeed = TIM_ONE_PERCENT * 5;
+  
 
-  const int DEC = 4000;
-  int decTime = 0;
-  int decStep = 0;
   
   
 //  while( 1 ) {
@@ -104,6 +110,8 @@ void deviceControlTaskFunc( void const *argument )
           accStep = deviceCurrentState.workSetting.targetSpeed / ( accTime / taskPeriod );
           deviceCurrentState.motorPwm = minStartSpeed;
           setBlowerPwm( TIM_DEFAULT_PERIOD );
+          //setMotorPwm( TIM_DEFAULT_PERIOD );
+          //osDelay(100);
         }
         if( accTime > 0 ) {
           deviceCurrentState.motorPwm += accStep;
@@ -113,13 +121,15 @@ void deviceControlTaskFunc( void const *argument )
         else {
           setMotorPwm( deviceCurrentState.workSetting.targetSpeed );
         }
+   //     setMotorPwm( deviceCurrentState.workSetting.targetSpeed );
+ //       setBlowerPwm( TIM_DEFAULT_PERIOD / 100 * 99 );
       }
       decTime = DEC;
  
       break;
     
     case STATE_WAITING:
-      if( decTime == DEC ) {
+            if( decTime == DEC ) {
         decStep = deviceCurrentState.motorPwm / ( decTime / taskPeriod );
         //deviceCurrentState.motorPwm = minStartSpeed;
         decTime = DEC;
@@ -131,16 +141,25 @@ void deviceControlTaskFunc( void const *argument )
       }
       else {
         if( deviceCurrentState.temperature > 78 ) setMotorPwm( 2000 );
-        else disableMotor();
-       
+        else {
+          disableMotor();
+          accTime = ACC;
+        }
       }
       disableBlower();
-      accTime = ACC;
+      //disableAll();
+      
       break;
       
+    case STATE_IDLE: {
+        setMotorPwm( TIM_DEFAULT_PERIOD / 100 * 50 );
+    }
+    break;
     }
     
-    
+    if( deviceCurrentState.temperature > RESET_TEMPERATURE ) {
+        HAL_NVIC_SystemReset();
+    }
     if( iwdgReloadPeriod <= 0 ) {
       __HAL_IWDG_RELOAD_COUNTER( &hiwdg );
       iwdgReloadPeriod = 3000;

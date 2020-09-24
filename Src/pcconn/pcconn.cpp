@@ -59,7 +59,7 @@ void pcconnTaskFunc( void const *argument )
   while(1) {
   
     if( msCounter == SEND_STATE_PERIOD && canTransmit == 1 ) {
-      snprintf( txBuffer, sizeof( txBuffer ), "airPackerV1.0\r\n" );
+      snprintf( txBuffer, sizeof( txBuffer ), "airPackerV1.0 ___________________\r\n" );
       HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
       osDelay(1);
       snprintf( txBuffer, sizeof( txBuffer ), "temp   %d*C\r\n", deviceCurrentState.temperature );
@@ -74,7 +74,14 @@ void pcconnTaskFunc( void const *argument )
       snprintf( txBuffer, sizeof( txBuffer ), "blower %d \r\n", deviceCurrentState.blowerPwm );
       HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
       osDelay(1);
+      snprintf( txBuffer, sizeof( txBuffer ), "_________________________________\r\n" );
+      HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
       msCounter = 0;
+    }
+    if( msCounter == 5 && deviceCurrentState.state == STATE_WORKING ) {
+      snprintf( txBuffer, sizeof( txBuffer ), "mot pwm %d \r\n", deviceCurrentState.motorPwm );
+      HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
+       msCounter = 0;
     }
     if( incomeDataReady ) {
       __HAL_UART_SEND_REQ( &huart1, UART_RXDATA_FLUSH_REQUEST);

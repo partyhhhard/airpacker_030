@@ -107,7 +107,9 @@ typedef struct {
   int temperature;
   uint16_t heaterPwm;
   int motorPwm;
+  int motorCCR;
   int blowerPwm;
+  int blowerCCR;
   bool heaterEnabled;
   bool motorEnabled;
   bool blowerEnabled;
