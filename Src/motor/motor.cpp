@@ -125,12 +125,12 @@ void deviceControlTaskFunc( void const *argument )
     
     if( dcs.needStart ) {
       dcs.needStart = 0;
-      acceleration = calcAcceleration( minStartSpeed, dcs.workSetting.targetMotorPwm, accDistance );
+      dcs.acceleration = calcAcceleration( minStartSpeed, dcs.workSetting.targetMotorPwm, dcs.accelerationDist );
       dcs.state = STATE_WAIT_MIN_TEMP;
     }
     if( dcs.needStop ) {
       dcs.needStop = 0;
-      acceleration = calcAcceleration( minStartSpeed, dcs.motorPwm, accDistance );
+      dcs.acceleration = calcAcceleration( minStartSpeed, dcs.motorPwm, dcs.decelerationDist );
       dcs.state = STATE_DECELERATION;
       fixTime();
     }
@@ -152,7 +152,7 @@ void deviceControlTaskFunc( void const *argument )
     
     case STATE_ACCELERATION: {
       if( dcs.motorPwm < dcs.workSetting.targetMotorPwm ) {
-        dcs.motorPwm = dcs.motorPwm + acceleration * timeFromFix() / 1000;
+        dcs.motorPwm = dcs.motorPwm + dcs.acceleration * timeFromFix() / 1000;
         setMotorPwm( (int)(dcs.motorPwm + 0.5f ) );
       }
       else {
@@ -175,7 +175,7 @@ void deviceControlTaskFunc( void const *argument )
     
     case STATE_DECELERATION: {
       if( dcs.motorPwm > minStartSpeed ) {
-        dcs.motorPwm = dcs.motorPwm - acceleration * timeFromFix() / 1000;
+        dcs.motorPwm = dcs.motorPwm - dcs.acceleration * timeFromFix() / 1000;
         setMotorPwm( (int)( dcs.motorPwm + 0.5f ) );
       }
       else {
