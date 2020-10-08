@@ -1,13 +1,13 @@
 #include "indicator.h"
+#include "motor.h"
 #include "math.h"
 #include "stm32f0xx_hal.h"
 #include "cmsis_os.h"
 #include "stm32f0xx_hal_spi.h"
 
-uint32_t timePressed[6] = {0};
-uint32_t timeReleased[6] = {0};
-
+#define BUTTON_MIN_TIME                  75
 #define LONG_BUTON_MIN_TIME                 500
+#define TIME_WAIT_AFTER_CHANGE              1200
 
 extern SPI_HandleTypeDef hspi1;
 extern I2C_HandleTypeDef hi2c1;
@@ -23,29 +23,30 @@ EXTI_ConfigTypeDef buttonExti;
 
 uint32_t irqDisableTime;
 
-
+int8_t updateValuePeriod = 2;
 const uint8_t numToLcd[10] = { dig0, dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8, dig9 };
 uint8_t currentR = 0;
 uint8_t r[4] = {0};
 volatile bool buttonHandled = true;
 
-
-volatile uint8_t changeHeaterState;
-
 tButton buttonOne = { RELEASED, BUTTON_ONE_PIN, 1, 0, 2 };
 tButton buttonTwo = { RELEASED, BUTTON_TWO_PIN, 1, 0, 2 };
-tButton buttonEdit = { RELEASED, BUTTON_EDIT_PIN, 1, 0, 2 };
+tButton buttonIdle = { RELEASED, BUTTON_IDLE_PIN, 1, 0, 2 };
 tButton buttonGo = { RELEASED, BUTTON_GO_PIN, 1, 0, 2 };
 tButton buttonLeft = { RELEASED, BUTTON_LEFT_PIN, 1, 0, 2 };
 tButton buttonRight = { RELEASED, BUTTON_RIGHT_PIN, 1, 0, 2 };
 
 
-
-
-tDeviceMenuState deviceMenuState;
- 
+tButton *bList[6] = {
+  &buttonGo,
+  &buttonIdle,
+  &buttonLeft,
+  &buttonRight,
+  &buttonOne,
+  &buttonTwo
+};
   
-tDeviceCurrentState  deviceCurrentState;
+tDeviceCurrentState  dcs;
 
 
 void divideIntoDigits( uint16_t number ) {
@@ -91,7 +92,7 @@ extern "C" void disableAllR( void ) {
 }
 
 
-void showValue( int *value, tMenuState *state  ) {
+void showValue( int showState, int *value, tMenuState *state  ) {
   
   divideIntoDigits( *value );
   disableAllR();
@@ -170,13 +171,23 @@ void buttonOneHandler( tDeviceCurrentState *cs )
     switch( buttonOne.state )
     {
     case PRESSED:
-      buttonOne.handled = 1;
+      if( ( HAL_GetTick() - buttonOne.timePressed ) > LONG_BUTON_MIN_TIME * 2 ) {
+        cs->menuState = EDIT_TIME;
+        //cs->editTimeExpired = TIME_WAIT_AFTER_CHANGE;
+      }
+      buttonOne.ticksBeforeCheck = 125;
+      //buttonOne.handled = 1;
       break;
       
     case RELEASED:
-      if( buttonOne.timePressed < LONG_BUTON_MIN_TIME ) {
-        if( cs->state != STATE_WORKING ) cs->timeModeEnabled = !cs->timeModeEnabled;
+      if( buttonOne.pressToReleaseTime > BUTTON_MIN_TIME &&
+         buttonOne.pressToReleaseTime < LONG_BUTON_MIN_TIME * 2 ) {
+        if( cs->state == STATE_STOPPED  ) {
+          cs->timeMode = ( cs->timeMode == TIME_MODE_ON  ) ? TIME_MODE_OFF : TIME_MODE_ON;       
+        }
       }
+      cs->menuState = SHOW_TEMP;
+      buttonOne.ticksBeforeCheck = 75;
       buttonOne.handled = 1;
       break;
     }
@@ -185,86 +196,129 @@ void buttonOneHandler( tDeviceCurrentState *cs )
 }
 void buttonTwoHandler( tDeviceCurrentState *cs )
 {
-  if( buttonTwo.ticksBeforeCheck == 0  && buttonTwo.handled == 0) {
-    switch( buttonTwo.state )
-    {
-    case PRESSED:
-      cs->state = STATE_IDLE;
-      buttonTwo.handled = 1;
-      break;
-      
-    case RELEASED:
-//      if( buttonTwo.timePressed < LONG_BUTON_MIN_TIME ) {
-//        if( cs->state != STATE_IDLE ) cs->state = STATE_IDLE;
-//      }
-      cs->state = STATE_WAITING;
-      buttonTwo.handled = 1;
-      break;
-    }
-  }
-   if( buttonTwo.ticksBeforeCheck > 0 ) buttonTwo.ticksBeforeCheck--;
+  
+  //  if( buttonIdle.handled == 0 ) {
+//    switch( deviceMenuState.menuState )
+//    {
+//    case SHOW_TEMP: deviceMenuState.menuState = SHOW_SPEED; break;
+//    case SHOW_SPEED: deviceMenuState.menuState = EDIT_TIME; break;
+//    case EDIT_TIME: deviceMenuState.menuState = SHOW_TEMP; break;
+//    }
+//    buttonIdle.handled = 1;
+//  }
+//  return;
+  
+//  if( buttonTwo.ticksBeforeCheck == 0  && buttonTwo.handled == 0) {
+//    switch( buttonTwo.state )
+//    {
+//    case PRESSED:
+//      cs->state = STATE_IDLE;
+//      buttonTwo.handled = 1;
+//      break;
+//      
+//    case RELEASED:
+////      if( buttonTwo.timePressed < LONG_BUTON_MIN_TIME ) {
+////        if( cs->state != STATE_IDLE ) cs->state = STATE_IDLE;
+////      }
+//      cs->state = STATE_STOPPED;
+//      buttonTwo.handled = 1;
+//      break;
+//    }
+//  }
+//   if( buttonTwo.ticksBeforeCheck > 0 ) buttonTwo.ticksBeforeCheck--;
 }
 void buttonGoHandler( tDeviceCurrentState *cs )
 {
   if( buttonGo.ticksBeforeCheck == 0 && buttonGo.handled == 0 ) {
-    if( buttonGo.state == RELEASED ) {
-      if( deviceCurrentState.state == STATE_WAITING ) {
-        cs->state = STATE_WORKING;
+    if( buttonGo.state == RELEASED && buttonGo.pressToReleaseTime > BUTTON_MIN_TIME ) {
+      if( cs->state == STATE_STOPPED ) {
+        cs->state = STATE_WAIT_MIN_TEMP;
+        buttonLeft.ticksBeforeCheck = 20;
       }
       else {
-        cs->state = STATE_WAITING;
+        cs->state = STATE_DECELERATION;
+        buttonLeft.ticksBeforeCheck = 2;
       }
     }
-    //buttonGo.ticksBeforeCheck = 1000;
     buttonGo.handled = 1;
   }
   if( buttonGo.ticksBeforeCheck > 0 ) buttonGo.ticksBeforeCheck--;
   return;
 }
 
-void buttonEditHandler( tDeviceCurrentState *cs )
+void buttonIdleHandler( tDeviceCurrentState *cs )
 { 
-  if( buttonEdit.handled == 0 ) {
-    switch( deviceMenuState.menuState )
-    {
-    case SHOW_TEMP: deviceMenuState.menuState = SHOW_SPEED; break;
-    case SHOW_SPEED: deviceMenuState.menuState = EDIT_TIME; break;
-    case EDIT_TIME: deviceMenuState.menuState = SHOW_TEMP; break;
-    }
-    buttonEdit.handled = 1;
+   if( buttonIdle.ticksBeforeCheck == 0 && buttonIdle.handled == 0 ) {
+     if( cs->state == STATE_STOPPED ) {
+       switch( buttonIdle.state )
+       {
+       case PRESSED:
+         cs->state = STATE_IDLE;
+         buttonIdle.ticksBeforeCheck = 125;
+         buttonIdle.handled = 1;
+         break;
+         
+       case RELEASED:
+         cs->state = STATE_STOPPED;
+         buttonIdle.ticksBeforeCheck = 125;
+         buttonIdle.handled = 1;
+         break;
+       }
+     }
   }
-  return;
+  if( buttonIdle.ticksBeforeCheck > 0 ) buttonIdle.ticksBeforeCheck--;
+
 }
 void buttonLeftHandler( tDeviceCurrentState *cs )
 {
   if( buttonLeft.ticksBeforeCheck == 0 && buttonLeft.handled == 0 ) {
   
-    switch( deviceMenuState.menuState )
+
+    switch( cs->menuState )
     {
-    case SHOW_TEMP:
-      if( HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
+    case SHOW_TEMP: { 
+      
+      if( HAL_GetTick() - buttonLeft.timePressed > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
         cs->workSetting.targetTemp -= 3;
         buttonLeft.ticksBeforeCheck = 125;
       }
       else if (buttonLeft.state == RELEASED) {
         cs->workSetting.targetTemp--;
         buttonLeft.handled = 1;
-        buttonRight.ticksBeforeCheck = 2;
+        buttonLeft.ticksBeforeCheck = 2;
       }
       if( cs->workSetting.targetTemp <= 0 ) cs->temperature = 0;
-      break;
-    case SHOW_SPEED:
-      if(  HAL_GetTick() - timePressed[2] > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
+    }
+    break;
+    
+    case SHOW_SPEED: {
+      if(  HAL_GetTick() - buttonLeft.timePressed > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
         cs->workSetting.targetSpeed -= 3;
         buttonLeft.ticksBeforeCheck = 125;
       }
       else if ( buttonLeft.state == RELEASED) {
         cs->workSetting.targetSpeed--;
         buttonLeft.handled = 1;
-        buttonRight.ticksBeforeCheck = 2;
+        buttonLeft.ticksBeforeCheck = 2;
       }
-      if( cs->workSetting.targetSpeed <= 0 ) deviceCurrentState.motorPwm = 0;
-      break;
+      if( cs->workSetting.targetSpeed <= 0 ) cs->motorPwm = 0;   /// wtf!!!!!!!!!!!!!!!!!
+    }
+    break;
+      
+    case EDIT_TIME: {
+      if(  HAL_GetTick() - buttonLeft.timePressed > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
+        cs->timeModeOneCycleDuration -= 5;
+        buttonLeft.ticksBeforeCheck = 125;
+      }
+      else if ( buttonLeft.state == RELEASED) {
+        cs->timeModeOneCycleDuration--;
+        buttonLeft.handled = 1;
+        buttonLeft.ticksBeforeCheck = 2;
+      }
+      //cs->editTimeExpired += 1200;
+      if( cs->timeModeOneCycleDuration <= 0 ) dcs.timeModeOneCycleDuration = 0;
+    }
+    break;
     }
   }
   if( buttonLeft.ticksBeforeCheck > 0 ) buttonLeft.ticksBeforeCheck--;
@@ -274,10 +328,10 @@ void buttonRightHandler( tDeviceCurrentState *cs )
 {
   if (buttonRight.ticksBeforeCheck == 0 && buttonRight.handled == 0)
   {
-    switch (deviceMenuState.menuState )
+    switch( cs->menuState )
     {
     case SHOW_TEMP:
-      if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
+      if (HAL_GetTick() - buttonRight.timePressed > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
         cs->workSetting.targetTemp += 3;
         buttonRight.ticksBeforeCheck = 125;
@@ -290,7 +344,7 @@ void buttonRightHandler( tDeviceCurrentState *cs )
       }
       break;
     case SHOW_SPEED:
-      if (HAL_GetTick() - timePressed[3] > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
+      if (HAL_GetTick() - buttonRight.timePressed > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
         cs->workSetting.targetSpeed += 3;
         buttonRight.ticksBeforeCheck = 125;
@@ -302,6 +356,22 @@ void buttonRightHandler( tDeviceCurrentState *cs )
         buttonRight.ticksBeforeCheck = 2;
       }
       break;
+      
+    case EDIT_TIME: {
+      if (HAL_GetTick() - buttonRight.timePressed > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
+      {
+        cs->timeModeOneCycleDuration += 5;
+        buttonRight.ticksBeforeCheck = 125;
+      }
+      else if (buttonRight.state == RELEASED)
+      {
+        cs->timeModeOneCycleDuration++;
+        buttonRight.handled = 1;
+        buttonRight.ticksBeforeCheck = 2;
+      }
+      //cs->editTimeExpired += 1200;
+    }
+    break;
     }
   }
   if( buttonRight.ticksBeforeCheck > 0 ) buttonRight.ticksBeforeCheck--;
@@ -315,61 +385,56 @@ int timeFromLastButton( void ) {
   uint32_t min = 0x0FFFFFFFF;
   
   uint32_t curTime = HAL_GetTick();
-  for( int i = 0; i < 4; i++ ) {
-    uint32_t dt = curTime - timePressed[i];
+  for( int i = 0; i < 6; i++ ) {
+    uint32_t dt = curTime - bList[i]->timePressed;
     if( dt > max ) max = dt;
     if( dt < min ) min = dt;
   }
-  for( int i = 0; i < 4; i++ ) {
-    uint32_t dt = curTime - timeReleased[i];
+  for( int i = 0; i < 6; i++ ) {
+    uint32_t dt = curTime - bList[i]->timeReleased;
     if( dt > max ) max = dt;
     if( dt < min ) min = dt;
   }
-time = min;
+  time = min;
   return min;
 }
-void showMenu()
+
+void showMenu( tDeviceCurrentState *cs )
 {
-  static int8_t updateValuePeriod = 2;
   
   if( updateValuePeriod == 0 ) {
-    switch( deviceMenuState.menuState ) 
+    switch( cs->menuState ) 
     {
-    case SHOW_TEMP:
-    // showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
-      if( timeFromLastButton() > 1600 && deviceMenuState.flagEdit != 1 ) {
-        showValue( &deviceCurrentState.temperature, &deviceMenuState.menuState );
+    case SHOW_SPEED: {
+      int pwm = (int)((float)dcs.workSetting.targetSpeed / 100.0 + 0.5f);
+      showValue( 1, &pwm, &cs->menuState );
+    }
+    break;
+    
+    case SHOW_TEMP: {
+      if( timeFromLastButton() > TIME_WAIT_AFTER_CHANGE && buttonLeft.state == RELEASED && buttonRight.state == RELEASED ) {
+        showValue(1,  &cs->temperature, &cs->menuState );
       }
       else {
-        showValue( &deviceCurrentState.workSetting.targetTemp, &deviceMenuState.menuState );
+        showValue( 1, &cs->workSetting.targetTemp, &cs->menuState );
       }
-      break;
-      
-    case SHOW_SPEED:   
-       if( timeFromLastButton() > 1600 && deviceMenuState.flagEdit != 1 ) {
-        showValue( &deviceCurrentState.motorPwm, &deviceMenuState.menuState );
-      }
-      else {
-        showValue( &deviceCurrentState.workSetting.targetSpeed, &deviceMenuState.menuState );
-      }
-      break;
-      
-    case EDIT_TIME:
-      
-      break;
-      
-
+    }
+    break;
+    
+    case EDIT_TIME: {
+        showValue( 1, &cs->timeModeOneCycleDuration, &cs->menuState );
+    }
+    break;
     }
     updateValuePeriod = 2;
   }
-  
   updateValuePeriod--;
 }
 
 void indicatorTaskFunc( const void *argument )
 {
-  uint8_t data[7] = { sega, segb, segc, segd, sege, segf, segg };
-  
+  //uint8_t data[7] = { sega, segb, segc, segd, sege, segf, segg };
+  osDelay(1000);
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3,GPIO_PIN_RESET);
@@ -383,23 +448,22 @@ void indicatorTaskFunc( const void *argument )
   osDelay(2);
   cs1();
 
-  uint16_t cnt = 0;
-  uint16_t sleepCnt = 0;
   
   HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
-  uint32_t result;
+  
 
   while(1) {
     
-    showMenu();
-    buttonOneHandler( &deviceCurrentState );
-    buttonTwoHandler( &deviceCurrentState );
-    buttonEditHandler( &deviceCurrentState );
-    buttonGoHandler( &deviceCurrentState);
-    buttonLeftHandler( &deviceCurrentState );
-    buttonRightHandler( &deviceCurrentState );
+    showMenu( &dcs );
     
+    buttonGoHandler( &dcs);
+    buttonIdleHandler( &dcs );
+    buttonLeftHandler( &dcs );
+    buttonRightHandler( &dcs );
+    buttonOneHandler( &dcs );
+    buttonTwoHandler( &dcs );
     
+   
     osDelay(1);
   }
 }
@@ -420,91 +484,86 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   irqDelay( 1000 );
 
   switch(GPIO_Pin)
-  {
-  case BUTTON_ONE_PIN: {
-    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_ONE_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[4] = HAL_GetTick();
-      buttonOne.state = PRESSED;
-      buttonOne.handled = 0;
-    }
-    else {
-      timeReleased[4] = HAL_GetTick();
-      buttonOne.timePressed = timeReleased[4] - timePressed[4];
-      buttonOne.state = RELEASED;
-      buttonOne.handled = 0;
-    }
-    }
-    break;
-  
-  case BUTTON_TWO_PIN: {
-    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_TWO_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[5] = HAL_GetTick();
-      buttonTwo.state = PRESSED;
-      buttonTwo.handled = 0;
-    }
-    else {
-      timeReleased[5] = HAL_GetTick();
-      buttonTwo.timePressed = timeReleased[5] - timePressed[5];
-      buttonTwo.state = RELEASED;
-      buttonTwo.handled = 0;
-    }
-    }
-    break;
-  
-  case BUTTON_EDIT_PIN:
-    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_EDIT_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[0] = HAL_GetTick();
-      buttonEdit.state = PRESSED;
-      buttonEdit.handled = 0;
-    }
-    else {
-      timeReleased[0] = HAL_GetTick();
-      buttonEdit.timePressed = timeReleased[0] - timePressed[0];
-      buttonEdit.state = RELEASED;
-      buttonEdit.handled = 0;
-      
-    }
-    break;
-    
+  {    
   case BUTTON_GO_PIN:
     if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_GO_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[1] = HAL_GetTick();
+      buttonGo.timePressed = HAL_GetTick();
       buttonGo.state = PRESSED;
-      buttonGo.handled = 0;
     }
     else {
-      timeReleased[1] = HAL_GetTick();
-      buttonGo.timePressed = timeReleased[1] - timePressed[1];
+      buttonGo.timeReleased = HAL_GetTick();
+      buttonGo.pressToReleaseTime = buttonGo.timeReleased - buttonGo.timePressed;
       buttonGo.state = RELEASED;
-      buttonGo.handled = 0;
+    }
+    buttonGo.handled = 0;
+    break;
+    
+  case BUTTON_IDLE_PIN:
+    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_IDLE_PIN ) == GPIO_PIN_RESET ) {
+      buttonIdle.timePressed = HAL_GetTick();
+      buttonIdle.state = PRESSED;
+      buttonIdle.handled = 0;
+    }
+    else {
+      buttonIdle.timeReleased = HAL_GetTick();
+      buttonIdle.pressToReleaseTime =  buttonIdle.timeReleased - buttonIdle.timePressed;
+      buttonIdle.state = RELEASED;
+      buttonIdle.handled = 0;
+      
     }
     break;
     
   case BUTTON_LEFT_PIN:
     if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_LEFT_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[2] = HAL_GetTick();
+      buttonLeft.timePressed = HAL_GetTick();
       buttonLeft.state = PRESSED;
-      buttonLeft.handled = 0;
     }
     else {
-      timeReleased[2] = HAL_GetTick();
-      buttonLeft.timePressed = timeReleased[2] - timePressed[2];
+      buttonLeft.timeReleased = HAL_GetTick();
+      buttonLeft.pressToReleaseTime = buttonLeft.timeReleased - buttonLeft.timePressed;
       buttonLeft.state = RELEASED;
-      buttonLeft.handled = 0;
     }
+    buttonLeft.handled = 0;
     break;
     
   case BUTTON_RIGHT_PIN:
     if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_RIGHT_PIN ) == GPIO_PIN_RESET ) {
-      timePressed[3] = HAL_GetTick();
+      buttonRight.timePressed= HAL_GetTick();
       buttonRight.state = PRESSED;
-      buttonRight.handled = 0;
     }
     else {
-      timeReleased[3] = HAL_GetTick();
-      buttonRight.timePressed = timeReleased[3] - timePressed[3];
+      buttonRight.timeReleased = HAL_GetTick();
+      buttonRight.pressToReleaseTime = buttonRight.timeReleased - buttonRight.timePressed;
       buttonRight.state = RELEASED;
-      buttonRight.handled = 0;
+    }
+    buttonRight.handled = 0;
+    break;
+    
+  case BUTTON_ONE_PIN: {
+    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_ONE_PIN ) == GPIO_PIN_RESET ) {
+      buttonOne.timePressed = HAL_GetTick();
+      buttonOne.state = PRESSED;
+    }
+    else {
+      buttonOne.timeReleased = HAL_GetTick();
+      buttonOne.pressToReleaseTime = buttonOne.timeReleased - buttonOne.timePressed;
+      buttonOne.state = RELEASED;
+    }
+    buttonOne.handled = 0;
+  }
+  break;
+  
+  case BUTTON_TWO_PIN: {
+    if( HAL_GPIO_ReadPin( BUTTON_PORT, BUTTON_TWO_PIN ) == GPIO_PIN_RESET ) {
+      buttonTwo.timePressed = HAL_GetTick();
+      buttonTwo.state = PRESSED;
+    }
+    else {
+      buttonTwo.timeReleased = HAL_GetTick();
+      buttonTwo.pressToReleaseTime = buttonTwo.timeReleased - buttonTwo.timePressed;
+      buttonTwo.state = RELEASED;
+    }
+     buttonTwo.handled = 0;
     }
     break;
     

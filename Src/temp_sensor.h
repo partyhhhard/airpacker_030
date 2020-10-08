@@ -3,8 +3,8 @@
 #define TEMP_SENSOR_H
 #include "stm32f030x8.h"
 
-#define MAX_TEMPERATURE         120
-#define RESET_TEMPERATURE       125
+#define MAX_TEMPERATURE         125
+#define RESET_TEMPERATURE       135
 
 #define BASE_VOLTAGE 3.27
 #define HEATER_TIMER_DEF_PERIOD 2000

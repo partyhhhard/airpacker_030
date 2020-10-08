@@ -2,6 +2,7 @@
 #define INDICATOR_H
 
 #include "stdint.h"
+#include "eeprom.h"
 
 //#define sega ((uint8_t)0x40)
 //#define segb ((uint8_t)0x20)
@@ -14,7 +15,7 @@
 #define BUTTON_TWO_PIN       GPIO_PIN_11
 #define BUTTON_RIGHT_PIN     GPIO_PIN_12
 #define BUTTON_LEFT_PIN      GPIO_PIN_13
-#define BUTTON_EDIT_PIN      GPIO_PIN_14
+#define BUTTON_IDLE_PIN      GPIO_PIN_14
 #define BUTTON_GO_PIN        GPIO_PIN_15
 
 #define BUTTON_PORT      GPIOB
@@ -52,7 +53,7 @@
 
 #define CHAR_TEMPERATURE  ((uint8_t)( sega & segb & segf & segg ))
 #define CHAR_SPEED          ((uint8_t)( segc & segd & sege | ~sega ))
-#define CHAR_TIME           ((uint8_t)( sega & segb & segf & segg & sege ))
+#define CHAR_TIME           ((uint8_t)( sega & segc & segd & segg & segf ))
 
 
 
@@ -71,8 +72,10 @@ typedef struct {
   tButtonState state;
   uint16_t pin;
   uint8_t handled;
-  uint32_t timePressed;
   uint16_t ticksBeforeCheck;
+  uint32_t pressToReleaseTime;
+  uint32_t timePressed;
+  uint32_t timeReleased;
 } tButton;
 
 
@@ -86,49 +89,46 @@ void buttonLeftHandler( );
 
 void buttonRightHandler( );
 
-typedef struct {
-  int targetTemp;
-  int targetSpeed;
-  int targetBlower;
-  int time;
-} tWorkSetting;
-
-typedef enum {
-  STATE_WAITING = 0,
-  STATE_EDIT_SETTINGS,
-  STATE_WORKING,
-  STATE_IDLE,
-} tDeviceState;
-
-typedef struct {
-  tDeviceState state;
-  tDeviceState prevState;
-  tWorkSetting workSetting;
-  int temperature;
-  uint16_t heaterPwm;
-  int motorPwm;
-  int motorCCR;
-  int blowerPwm;
-  int blowerCCR;
-  bool heaterEnabled;
-  bool motorEnabled;
-  bool blowerEnabled;
-  bool timeModeEnabled;
-  float motorControlVoltage;
-  uint8_t minTempAchieved;
-  uint32_t stateChangedTime;
-  
-} tDeviceCurrentState;
-
 typedef enum {
   SHOW_TEMP = 0,
   SHOW_SPEED,
   EDIT_TIME,
 } tMenuState;
 
+typedef enum {
+  TIME_MODE_OFF = 0,
+  TIME_MODE_ON,
+} tTimeMode;
+
+typedef enum {
+  STATE_STOPPED = 0,
+  STATE_WAIT_MIN_TEMP,
+  STATE_ACCELERATION,
+  STATE_EDIT_SETTINGS,
+  STATE_WORKING,
+  STATE_DECELERATION,
+  STATE_IDLE,
+} tDeviceState;
+
 typedef struct {
+  tDeviceState state;
+  tWorkSettings workSetting;
+  int temperature;
+  uint16_t heaterPwm;
+  float motorPwm;
+  float blowerPwm;
+  uint8_t heaterEnabled;
+  uint8_t motorEnabled;
+  uint8_t blowerEnabled;
+  tTimeMode timeMode;
+  int timeModeOneCycleDuration;
+  float motorControlVoltage;
+  uint8_t minTempAchieved;
   tMenuState menuState;
+  int editTimeExpired;
   bool flagEdit;
-} tDeviceMenuState;
+} tDeviceCurrentState;
+
+
 
 #endif

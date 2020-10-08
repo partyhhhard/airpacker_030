@@ -1,9 +1,16 @@
 #ifndef EEPROM_H_INCLUDED
 #define EEPROM_H_INCLUDED
 
-
+//#include "indicator.h"
 #include "stdint.h"
 #include "stm32f030x8.h"
+
+
+typedef struct {
+  int targetTemp;
+  float targetSpeed;
+  int targetBlower;
+} tWorkSettings;
 
 typedef enum {
   I2C_ERR = 0,
@@ -15,6 +22,8 @@ typedef enum {
 #define DEV_MEM_SIZE    32*1024     //bytes
 #define DEV_ADDR_SIZE   1           //bytes
 #define DEV_PAGE_SIZE   32          //bytes
+
+#define PROFILES_MAX_QTY    4
 
 
 tI2cResult eepromWriteByte( uint16_t addr, uint8_t *data );
@@ -28,4 +37,6 @@ tI2cResult eepromReaFloat( uint16_t addr, uint8_t *data );
 
 tI2cResult eepromWriteData( uint16_t addr, uint8_t *data, int size );
 tI2cResult eepromReadData( uint16_t addr, uint8_t *data, int size );
+
+
 #endif

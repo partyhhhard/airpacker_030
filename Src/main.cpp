@@ -177,18 +177,19 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  osThreadDef( pcconn, pcconnTaskFunc, osPriorityLow, 0, 80 );
+  pcconnTaskHandle = osThreadCreate( osThread( pcconn ), NULL );
   
- osThreadDef( pcconn, pcconnTaskFunc, osPriorityLow, 0, 64 );
- pcconnTaskHandle = osThreadCreate( osThread( pcconn ), NULL );
- 
- osThreadDef( motorControl, deviceControlTaskFunc, osPriorityNormal, 0, 64 );
- motorControlTaskHandle = osThreadCreate( osThread( motorControl ), NULL );
- 
- osThreadDef( temperatureControl, temperatureAndPwmControlTaskFunc, osPriorityNormal, 0, 64 );
- temperatureControlTaskHandle = osThreadCreate( osThread( temperatureControl ), NULL );
- 
- osThreadDef( indicator, indicatorTaskFunc, osPriorityLow, 0, 64 );
- indicatorTaskHandle = osThreadCreate( osThread( indicator ), NULL );
+  osThreadDef( motorControl, deviceControlTaskFunc, osPriorityNormal, 0, 80 );
+  motorControlTaskHandle = osThreadCreate( osThread( motorControl ), NULL );
+  
+  osThreadDef( temperatureControl, temperatureAndPwmControlTaskFunc, osPriorityNormal, 0, 100 );
+  temperatureControlTaskHandle = osThreadCreate( osThread( temperatureControl ), NULL );
+  
+  osThreadDef( indicator, indicatorTaskFunc, osPriorityNormal, 0, 100 );
+  indicatorTaskHandle = osThreadCreate( osThread( indicator ), NULL );
+  
+  
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -376,7 +377,7 @@ static void MX_IWDG_Init(void)
   
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_64;
   hiwdg.Init.Window = 4095;
   hiwdg.Init.Reload = 4095;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
