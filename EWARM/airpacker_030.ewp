@@ -327,6 +327,8 @@
           <state>$PROJ_DIR$/../Src\motor</state>
           <state>$PROJ_DIR$/../Src\temp_sensor</state>
           <state>$PROJ_DIR$/../Src\pcconn</state>
+          <state>$PROJ_DIR$/../Src\eeprom</state>
+          <state>$PROJ_DIR$/../Src</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -346,7 +348,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -355,7 +357,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1003,6 +1005,15 @@
     <group>
       <name>User</name>
       <group>
+        <name>eeprom</name>
+        <file>
+          <name>$PROJ_DIR$\..\Src\eeprom\eeprom.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Src\eeprom\eeprom.h</name>
+        </file>
+      </group>
+      <group>
         <name>indicator</name>
         <file>
           <name>$PROJ_DIR$\..\Src\indicator\indicator.cpp</name>
@@ -1033,7 +1044,19 @@
         <name>$PROJ_DIR$\..\Src\freertos.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\gcode.cpp</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\gcode.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\main.cpp</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\pid_controller.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\pid_controller.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32f0xx_hal_msp.c</name>

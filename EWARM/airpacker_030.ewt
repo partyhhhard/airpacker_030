@@ -1181,6 +1181,15 @@
     <group>
       <name>User</name>
       <group>
+        <name>eeprom</name>
+        <file>
+          <name>$PROJ_DIR$\..\Src\eeprom\eeprom.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Src\eeprom\eeprom.h</name>
+        </file>
+      </group>
+      <group>
         <name>indicator</name>
         <file>
           <name>$PROJ_DIR$\..\Src\indicator\indicator.cpp</name>
@@ -1211,7 +1220,19 @@
         <name>$PROJ_DIR$\..\Src\freertos.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\gcode.cpp</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\gcode.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\main.cpp</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\pid_controller.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\pid_controller.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32f0xx_hal_msp.c</name>
