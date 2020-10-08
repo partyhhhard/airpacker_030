@@ -76,8 +76,7 @@ bool isEqual( float par1, float par2 )
   if( fabs( par1 - par2 ) < eps ) return true;
   return false;
 }
-float acceleration = 0;
-const float accDistance = 0.05;
+
 uint32_t curTime = 0;
 uint32_t startTime = 0;
 
@@ -116,12 +115,7 @@ void deviceControlTaskFunc( void const *argument )
   
   float minStartSpeed = (float)TIM_ONE_PERCENT * 15.0;
   int blowerStartDelay = blowerStartDelayValue;
-  //float ACC = 2100.0;
-  //float DEC = 1800.0;
-  //float accTime = ACC;
-   // float decTime = 0.0;
-  //float accStep = 0;
-  float decStep = 0;
+
   startTime = 0;
   
   dcs.timeMode = TIME_MODE_OFF;
@@ -129,14 +123,25 @@ void deviceControlTaskFunc( void const *argument )
   
   while( 1 ) {
     
+    if( dcs.needStart ) {
+      dcs.needStart = 0;
+      acceleration = calcAcceleration( minStartSpeed, dcs.workSetting.targetMotorPwm, accDistance );
+      dcs.state = STATE_WAIT_MIN_TEMP;
+    }
+    if( dcs.needStop ) {
+      dcs.needStop = 0;
+      acceleration = calcAcceleration( minStartSpeed, dcs.motorPwm, accDistance );
+      dcs.state = STATE_DECELERATION;
+      fixTime();
+    }
+    
     switch( dcs.state )
     {
     case STATE_WAIT_MIN_TEMP: {
       if( dcs.minTempAchieved ) {
         dcs.state = STATE_ACCELERATION;
-        setMotorPwm( (int)( minStartSpeed + 0.5f ) );
         dcs.motorPwm = minStartSpeed;
-        acceleration = calcAcceleration( minStartSpeed, dcs.workSetting.targetSpeed, accDistance );
+        setMotorPwm( (int)( dcs.motorPwm + 0.5f ) );
         fixTime();
       }
       else {
@@ -146,12 +151,12 @@ void deviceControlTaskFunc( void const *argument )
     break;
     
     case STATE_ACCELERATION: {
-      if( dcs.motorPwm < dcs.workSetting.targetSpeed ) {
+      if( dcs.motorPwm < dcs.workSetting.targetMotorPwm ) {
         dcs.motorPwm = dcs.motorPwm + acceleration * timeFromFix() / 1000;
         setMotorPwm( (int)(dcs.motorPwm + 0.5f ) );
       }
       else {
-        dcs.motorPwm = dcs.workSetting.targetSpeed;
+        dcs.motorPwm = dcs.workSetting.targetMotorPwm;
         setMotorPwm( (int)( dcs.motorPwm + .5f ) );
         dcs.state = STATE_WORKING;
       }
@@ -159,8 +164,8 @@ void deviceControlTaskFunc( void const *argument )
     break;
     
     case STATE_WORKING: {
-      if( isEqual( dcs.motorPwm, dcs.workSetting.targetSpeed ) == false ) {
-        dcs.motorPwm = dcs.workSetting.targetSpeed;
+      if( isEqual( dcs.motorPwm, dcs.workSetting.targetMotorPwm ) == false ) {
+        dcs.motorPwm = dcs.workSetting.targetMotorPwm;
         setMotorPwm( (int)( dcs.motorPwm + 0.5f ) );
       }
       else {
@@ -170,7 +175,15 @@ void deviceControlTaskFunc( void const *argument )
     
     case STATE_DECELERATION: {
       if( dcs.motorPwm > minStartSpeed ) {
-        
+        dcs.motorPwm = dcs.motorPwm - acceleration * timeFromFix() / 1000;
+        setMotorPwm( (int)( dcs.motorPwm + 0.5f ) );
+      }
+      else {
+        dcs.state = STATE_STOPPED;
+        dcs.motorPwm = 0;
+        dcs.blowerPwm = 0;
+        disableAll();
+        dcs.needSave = 1;
       }
     } break;
     
@@ -183,9 +196,6 @@ void deviceControlTaskFunc( void const *argument )
     } break;
     }
     
-    if( dcs.temperature > RESET_TEMPERATURE ) {
-        HAL_NVIC_SystemReset();
-    }
     if( iwdgReloadPeriod <= 0 ) {
       __HAL_IWDG_RELOAD_COUNTER( &hiwdg );
       iwdgReloadPeriod = 3000;

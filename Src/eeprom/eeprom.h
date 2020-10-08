@@ -8,8 +8,10 @@
 
 typedef struct {
   int targetTemp;
-  float targetSpeed;
-  int targetBlower;
+  float targetMotorPwm;
+  float targetBlowerPwm;
+  float accDist;
+  float decDist;
 } tWorkSettings;
 
 typedef enum {

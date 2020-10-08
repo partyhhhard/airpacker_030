@@ -78,21 +78,11 @@ typedef struct {
   uint32_t timeReleased;
 } tButton;
 
-
-extern void indicatorTaskFunc( const void *argument );
-
-void buttonGoHandler( );
-
-void buttonEditHandler( );
-
-void buttonLeftHandler( );
-
-void buttonRightHandler( );
-
 typedef enum {
   SHOW_TEMP = 0,
   SHOW_SPEED,
   EDIT_TIME,
+  EDIT_SPEED,
 } tMenuState;
 
 typedef enum {
@@ -113,8 +103,18 @@ typedef enum {
 typedef struct {
   tDeviceState state;
   tWorkSettings workSetting;
+  
+  uint8_t needStart;
+  uint8_t needStop;
+  uint8_t minTempAchieved;
+  uint8_t needSave;
+  
+  float acceleration;
+  float accelerationDist;
+  float decelerationDist;
+  
   int temperature;
-  uint16_t heaterPwm;
+  float heaterPwm;
   float motorPwm;
   float blowerPwm;
   uint8_t heaterEnabled;
@@ -123,12 +123,18 @@ typedef struct {
   tTimeMode timeMode;
   int timeModeOneCycleDuration;
   float motorControlVoltage;
-  uint8_t minTempAchieved;
   tMenuState menuState;
   int editTimeExpired;
   bool flagEdit;
 } tDeviceCurrentState;
 
+
+extern void indicatorTaskFunc( const void *argument );
+
+void buttonGoHandler( tDeviceCurrentState *cs );
+void buttonEditHandler( tDeviceCurrentState *cs );
+void buttonLeftHandler( tDeviceCurrentState *cs );
+void buttonRightHandler( tDeviceCurrentState *cs );
 
 
 #endif

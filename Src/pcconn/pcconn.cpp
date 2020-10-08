@@ -19,11 +19,19 @@ typedef struct {
   uint16_t crc;
   tWorkSettings data;
 } tSettingsProfile;
+typedef struct {
+  uint16_t crc;
+  float motorPwm;
+  int temperature;
+  float accdist;
+  float decdist;
+} tLastWorkSettings;
 
 
 typedef struct {
   uint16_t crc;
   tSettingsProfile storedProfile[PROFILES_MAX_QTY];
+  tLastWorkSettings lvs;
 } tEEPROM;
 
 
@@ -81,7 +89,7 @@ void pcconnTaskFunc( void const *argument )
 //  uint16_t addr = 0;
 //  for( int i = 0; i < PROFILES_MAX_QTY; i++ ) {
 //    eeprom.storedProfile[i].data.targetBlower = startB;
-//    eeprom.storedProfile[i].data.targetSpeed = startS;
+//    eeprom.storedProfile[i].data.targetMotorPwm = startS;
 //    eeprom.storedProfile[i].data.targetTemp = startT;
 //    eeprom.storedProfile[i].crc = 0;
 //    startB -= 12;
@@ -93,7 +101,7 @@ void pcconnTaskFunc( void const *argument )
   osDelay(2000);
   tEEPROM eeprom;
   memset( &eeprom, 0, sizeof( eeprom ) );
-  uint16_t addr = 0;
+  uint16_t addr = offsetof( tEEPROM, storedProfile );
   for( int i = 0; i < PROFILES_MAX_QTY; i++ ) {
     eepromReadData( addr, (uint8_t*)&eeprom.storedProfile[i], sizeof( tSettingsProfile ) );
     addr += sizeof( tSettingsProfile );
@@ -108,15 +116,15 @@ void pcconnTaskFunc( void const *argument )
       HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
       msCounter = 0;
     }
-//    if( ( msCounter % 300 == 0 ) && ( dcs.state == STATE_WORKING || dcs.state == STATE_IDLE ) ) {
-//     
-////       snprintf( txBuffer, sizeof( txBuffer ), "T = %d C; M = %5.2f%%; H = %d%% B = %d%%\r\n", 
-////                dcs.temperature, dcs.motorPwm, 
-////                dcs.heaterPwm, dcs.blowerPwm );
-//      snprintf( txBuffer, sizeof( txBuffer ), "M = %5.2f%%\r\n", dcs.motorPwm );
-//      HAL_UART_Transmit_IT( &huart1, (uint8_t*)&txBuffer[0], strlen( txBuffer ) );
-//
-//    }
+    if( dcs.needSave ) {
+      dcs.needSave = 0;
+      eeprom.lvs.crc = 0x0123;
+      eeprom.lvs.motorPwm = dcs.workSetting.targetMotorPwm;
+      eeprom.lvs.temperature = dcs.workSetting.targetTemp;
+      addr = offsetof( tEEPROM, lvs );
+      eepromWriteData( addr, (uint8_t*)&eeprom.lvs, sizeof( eeprom.lvs ) );
+    }
+      
     if( incomeDataReady ) {
       __HAL_UART_SEND_REQ( &huart1, UART_RXDATA_FLUSH_REQUEST);
      

@@ -232,12 +232,12 @@ void buttonGoHandler( tDeviceCurrentState *cs )
   if( buttonGo.ticksBeforeCheck == 0 && buttonGo.handled == 0 ) {
     if( buttonGo.state == RELEASED && buttonGo.pressToReleaseTime > BUTTON_MIN_TIME ) {
       if( cs->state == STATE_STOPPED ) {
-        cs->state = STATE_WAIT_MIN_TEMP;
+        cs->needStart = 1;//cs->state = STATE_WAIT_MIN_TEMP;
         buttonLeft.ticksBeforeCheck = 20;
       }
       else {
-        cs->state = STATE_DECELERATION;
-        buttonLeft.ticksBeforeCheck = 2;
+        cs->needStop = 1;//cs->state = STATE_DECELERATION;
+        buttonLeft.ticksBeforeCheck = 20;
       }
     }
     buttonGo.handled = 1;
@@ -293,15 +293,15 @@ void buttonLeftHandler( tDeviceCurrentState *cs )
     
     case SHOW_SPEED: {
       if(  HAL_GetTick() - buttonLeft.timePressed > LONG_BUTON_MIN_TIME && buttonLeft.state == PRESSED ) {
-        cs->workSetting.targetSpeed -= 3;
+        cs->workSetting.targetMotorPwm -= 3;
         buttonLeft.ticksBeforeCheck = 125;
       }
       else if ( buttonLeft.state == RELEASED) {
-        cs->workSetting.targetSpeed--;
+        cs->workSetting.targetMotorPwm--;
         buttonLeft.handled = 1;
         buttonLeft.ticksBeforeCheck = 2;
       }
-      if( cs->workSetting.targetSpeed <= 0 ) cs->motorPwm = 0;   /// wtf!!!!!!!!!!!!!!!!!
+      if( cs->workSetting.targetMotorPwm <= 0 ) cs->motorPwm = 0;   /// wtf!!!!!!!!!!!!!!!!!
     }
     break;
       
@@ -346,12 +346,12 @@ void buttonRightHandler( tDeviceCurrentState *cs )
     case SHOW_SPEED:
       if (HAL_GetTick() - buttonRight.timePressed > LONG_BUTON_MIN_TIME && buttonRight.state == PRESSED)
       {
-        cs->workSetting.targetSpeed += 3;
+        cs->workSetting.targetMotorPwm += 3;
         buttonRight.ticksBeforeCheck = 125;
       }
       else if (buttonRight.state == RELEASED)
       {
-        cs->workSetting.targetSpeed++;
+        cs->workSetting.targetMotorPwm++;
         buttonRight.handled = 1;
         buttonRight.ticksBeforeCheck = 2;
       }
@@ -406,7 +406,7 @@ void showMenu( tDeviceCurrentState *cs )
     switch( cs->menuState ) 
     {
     case SHOW_SPEED: {
-      int pwm = (int)((float)dcs.workSetting.targetSpeed / 100.0 + 0.5f);
+      int pwm = (int)((float)dcs.workSetting.targetMotorPwm / 100.0 + 0.5f);
       showValue( 1, &pwm, &cs->menuState );
     }
     break;
@@ -460,8 +460,8 @@ void indicatorTaskFunc( const void *argument )
     buttonIdleHandler( &dcs );
     buttonLeftHandler( &dcs );
     buttonRightHandler( &dcs );
-    buttonOneHandler( &dcs );
-    buttonTwoHandler( &dcs );
+    //buttonOneHandler( &dcs );
+    //buttonTwoHandler( &dcs );
     
    
     osDelay(1);

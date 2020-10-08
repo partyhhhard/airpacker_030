@@ -146,8 +146,8 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
   
   HAL_ADC_Start_IT( &hadc );
   
-  dcs.workSetting.targetBlower = 20;
-  dcs.workSetting.targetSpeed = 200;
+  dcs.workSetting.targetBlowerPwm = 20;
+  dcs.workSetting.targetMotorPwm = 200;
   dcs.workSetting.targetTemp = 107;
  
   
@@ -186,10 +186,10 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     dcs.motorControlVoltage = getMotorControlVoltage();
     
     // calc target motor pwm from input voltage
-    dcs.workSetting.targetSpeed = (int)(TIM_DEFAULT_PERIOD - ( TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD * (3.26 -  dcs.motorControlVoltage ) / 3.26) ) + 0.5f);
-    if( dcs.workSetting.targetSpeed < 0 ) dcs.workSetting.targetSpeed = 0;
+    dcs.workSetting.targetMotorPwm = (int)(TIM_DEFAULT_PERIOD - ( TIM_DEFAULT_PERIOD - (TIM_DEFAULT_PERIOD * (3.26 -  dcs.motorControlVoltage ) / 3.26) ) + 0.5f);
+    if( dcs.workSetting.targetMotorPwm < 0 ) dcs.workSetting.targetMotorPwm = 0;
     if( dcs.menuState != EDIT_TIME ) {
-      if( fabs( prevMotTargetSpd - dcs.workSetting.targetSpeed ) > 50 ) {
+      if( fabs( prevMotTargetSpd - dcs.workSetting.targetMotorPwm ) > 50 ) {
         if( dcs.menuState != SHOW_SPEED ) {
           dcs.menuState = SHOW_SPEED;
           timeleft = 1200;
@@ -202,7 +202,7 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
         if( timeleft > 0 ) timeleft -= 100;
       }
     }
-    prevMotTargetSpd = dcs.workSetting.targetSpeed;
+    prevMotTargetSpd = dcs.workSetting.targetMotorPwm;
     
     float dt = dcs.workSetting.targetTemp - dcs.temperature;
     currentDT = dt;
@@ -212,38 +212,49 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
     else {
       dcs.minTempAchieved = 1;
     }
-    switch( dcs.state )
-    {
-    case STATE_WORKING: {
-       int pwm = 0;
-     // if( dt > 0 ) {
-        PIDSetpointSet( &pid, (float)dcs.workSetting.targetTemp );
-        PIDInputSet( &pid, (float)dcs.temperature );
-        PIDCompute( &pid );
-        pwm = (int)PIDOutputGet( &pid );
-        //pwm = calcHeaterPwm( dt );
-        setHeaterPwm( pwm );
-//      }
-//      else {
-//        setHeaterPwm( 0 );
-//      }
-     
-//      if( dcs.minTempAchieved == 1 ) {
-//        //dcs.motorPwm = dcs.workSetting.targetSpeed;
-//      }
-    }
-    break;
     
-    case STATE_STOPPED:
-      disableHeater();
-      resetPid( &pid );
-      break;
+    if( dcs.heaterEnabled ) {
+      int pwm = 0;
+      PIDSetpointSet( &pid, (float)dcs.workSetting.targetTemp );
+      PIDInputSet( &pid, (float)dcs.temperature );
+      PIDCompute( &pid );
+      pwm = (int)PIDOutputGet( &pid );
+      setHeaterPwm( pwm );
     }
+    else {
+      setHeaterPwm( 0 );
+    }
+    
+    if( dcs.temperature > RESET_TEMPERATURE ) {
+        HAL_NVIC_SystemReset();
+    }
+//    switch( dcs.state )
+//    {
+//    case STATE_WAIT_MIN_TEMP:
+//    case STATE_WORKING:
+//    case STATE_ACCELERATION:
+//    case STATE_DECELERATION: {
+//      int pwm = 0;
+//      PIDSetpointSet( &pid, (float)dcs.workSetting.targetTemp );
+//      PIDInputSet( &pid, (float)dcs.temperature );
+//      PIDCompute( &pid );
+//      pwm = (int)PIDOutputGet( &pid );
+//      setHeaterPwm( pwm );
+//    } break;
+//    case STATE_IDLE: {
+//      
+//    } break;
+//    
+//    case STATE_STOPPED: {
+//      disableHeater();
+//      resetPid( &pid );
+//    } break;
+//    }
     
 
     
 //    // set flag edit if changing target speed, 
-//    if( fabs(dcs.workSetting.targetSpeed - prevSpeed) > 2 ) { 
+//    if( fabs(dcs.workSetting.targetMotorPwm - prevSpeed) > 2 ) { 
 //      deviceMenuState.flagEdit = 1;
 //      editDelay = 14;
 //    }
@@ -261,7 +272,7 @@ void temperatureAndPwmControlTaskFunc( void const *argument )
         HAL_NVIC_SystemReset();
     }
     
-    prevMotTargetSpd = dcs.workSetting.targetSpeed;
+    prevMotTargetSpd = dcs.workSetting.targetMotorPwm;
     
     osDelay( 100 );
    
